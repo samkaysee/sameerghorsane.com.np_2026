@@ -1578,10 +1578,10 @@ em { font-style: italic; color: var(--gold-dark); }
   position: static;
 }
 
-/* Scrolled state: slim tab hugging right edge */
+/* Scrolled state: same position as hero — top-right with gap from edge */
 .apps-widget.is-fixed {
-  top: var(--nav-h);
-  right: 2;
+  top: calc(var(--nav-h) + 12px);
+  right: 24px;
 }
 
 /* ── BUTTON ── */
@@ -1609,20 +1609,7 @@ em { font-style: italic; color: var(--gold-dark); }
   border-color: rgba(234,189,35,0.65);
 }
 
-/* Scrolled state button — slim tab hugging right edge */
-.apps-widget.is-fixed .apps-widget__btn {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-right: none;
-  border-radius: 8px 0 0 8px;
-  padding: 10px 12px;
-  box-shadow: -3px 4px 16px rgba(0,0,0,0.10);
-  gap: 0;
-}
-.apps-widget.is-fixed .apps-widget__btn:hover {
-  background: var(--gold-light);
-  border-color: rgba(234,189,35,0.5);
-}
+/* Scrolled state: button keeps the same gold pill look as in hero — no restyle */
 
 /* Keep label visible in fixed/scrolled state — Tools label always visible */
 .apps-widget.is-fixed .apps-widget__btn-label {
@@ -1701,19 +1688,7 @@ em { font-style: italic; color: var(--gold-dark); }
   pointer-events: all;
 }
 
-/* Fixed state: panel slides in from the right */
-.apps-widget.is-fixed .apps-widget__panel {
-  position: fixed;
-  top: calc(var(--nav-h) + 4px);
-  right: 0;
-  margin-top: 0;
-  border-right: none;
-  border-radius: 12px 0 0 12px;
-  transform: translateX(8px) scale(0.97);
-}
-.apps-widget.is-fixed .apps-widget__panel.open {
-  transform: translateX(0) scale(1);
-}
+/* Scrolled state: panel still drops below the button (no edge-slide) */
 
 .apps-widget__panel-title {
   font-size: 0.65rem;
@@ -1934,35 +1909,31 @@ em { font-style: italic; color: var(--gold-dark); }
     transform: translateX(-50%) translateY(0) scale(1);
   }
 
-  /* Once fixed (scrolled past hero) — back to right-edge tab */
+  /* Once fixed (scrolled past hero) — same gold pill, top-right with gap */
   .apps-widget.is-fixed {
     position: fixed;
-    top: var(--nav-h);
-    right: 0;
+    top: calc(var(--nav-h) + 8px);
+    right: 16px;
+    left: auto;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     margin-top: 0;
   }
-  .apps-widget.is-fixed .apps-widget__btn {
-    border-radius: 8px 0 0 8px;
-    padding: 10px 12px;
-    background: var(--white);
-    border-right: none;
-  }
-  .apps-widget.is-fixed .apps-widget__btn-label { display: none !important; }
+  /* Mobile sticky button keeps the gold pill — no restyle */
+  .apps-widget.is-fixed .apps-widget__btn-label { display: inline !important; }
+  /* Panel drops below the button on mobile sticky too */
   .apps-widget.is-fixed .apps-widget__panel {
-    position: fixed;
-    top: calc(var(--nav-h) + 4px);
+    position: absolute;
+    top: 100%;
     right: 0;
     left: auto;
-    transform: translateX(8px) scale(0.97);
+    margin-top: 8px;
     width: 240px;
-    border-radius: 12px 0 0 12px;
-    border-right: none;
+    transform: translateY(6px) scale(0.97);
   }
   .apps-widget.is-fixed .apps-widget__panel.open {
-    transform: translateX(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 }
 

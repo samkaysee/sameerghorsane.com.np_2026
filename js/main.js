@@ -171,9 +171,16 @@ if (appsWidgetBtn && appsPanel) {
   appsWidgetBtn.addEventListener('click', (e) => {
     e.stopPropagation();
 
-    // In hero mode: scroll to About instead of opening panel (keeps portrait unblocked)
+    // In hero mode: scroll to About first (to free the portrait), then open the panel
     if (!isWidgetSticky()) {
       aboutSection?.scrollIntoView({ behavior: 'smooth' });
+
+      // Wait for scroll to settle, then open the panel.
+      // updateWidgetPosition() will have flipped the widget into sticky mode by then.
+      setTimeout(() => {
+        appsPanel.classList.add('open');
+        appsWidgetBtn.setAttribute('aria-expanded', 'true');
+      }, 650);
       return;
     }
 
