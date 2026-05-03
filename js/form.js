@@ -1,12 +1,15 @@
 /* ═══════════════════════════════════════════════════════
    SAMEER GHORSANE — form.js
-   Contact form handler — stores locally, shows clean feedback
+   Sends contact form via FormSubmit AJAX,
+   shows in-page success/error notice (no redirect).
 ═══════════════════════════════════════════════════════ */
 
 'use strict';
 
-const submitBtn  = document.getElementById('submitComment');
-const formNotice = document.getElementById('formNotice');
+const contactForm = document.getElementById('contactForm');
+const submitBtn   = document.getElementById('submitComment')
+                    || contactForm?.querySelector('button[type="submit"]');
+const formNotice  = document.getElementById('formNotice');
 
 const nameField  = document.getElementById('cf-name');
 const emailField = document.getElementById('cf-email');
@@ -15,8 +18,8 @@ const msgField   = document.getElementById('cf-msg');
 
 function showNotice(type, message) {
   if (!formNotice) return;
-  formNotice.className  = `form-notice ${type}`;
-  formNotice.innerHTML  = message;
+  formNotice.className     = `form-notice ${type}`;
+  formNotice.innerHTML     = message;
   formNotice.style.display = 'block';
   formNotice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -24,7 +27,7 @@ function showNotice(type, message) {
 function hideNotice() {
   if (!formNotice) return;
   formNotice.style.display = 'none';
-  formNotice.className = 'form-notice';
+  formNotice.className     = 'form-notice';
 }
 
 function validateEmail(email) {
@@ -37,25 +40,23 @@ function clearForm() {
   });
 }
 
-function saveSubmission(data) {
-  try {
-    const existing = JSON.parse(localStorage.getItem('sg_contact_submissions') || '[]');
-    existing.push({ ...data, timestamp: new Date().toISOString() });
-    localStorage.setItem('sg_contact_submissions', JSON.stringify(existing));
-  } catch (_) {
-    // Storage unavailable — silently continue
-  }
+function setSubmitting(isSubmitting) {
+  if (!submitBtn) return;
+  submitBtn.disabled = isSubmitting;
+  submitBtn.innerHTML = isSubmitting
+    ? '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending…'
+    : '<i class="fa-solid fa-paper-plane"></i> Send Message';
 }
 
-submitBtn?.addEventListener('click', () => {
+contactForm?.addEventListener('submit', async (e) => {
+  e.preventDefault(); // stop browser navigation to FormSubmit thank-you page
   hideNotice();
 
   const name  = nameField?.value.trim()  || '';
   const email = emailField?.value.trim() || '';
-  const phone = phoneField?.value.trim() || '';
   const msg   = msgField?.value.trim()   || '';
 
-  // Validation
+  // Client-side validation
   if (!name) {
     showNotice('error', '<i class="fa-solid fa-circle-exclamation"></i> Please enter your full name.');
     nameField?.focus();
@@ -72,24 +73,45 @@ submitBtn?.addEventListener('click', () => {
     return;
   }
 
-  // Save locally
-  saveSubmission({ name, email, phone, message: msg });
+  setSubmitting(true);
 
-  // Show loading state
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sending…';
+  try {
+    const formData = new FormData(contactForm);
 
-  // Simulate brief delay for UX
-  setTimeout(() => {
+    const res = await fetch(contactForm.action, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: formData
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    // FormSubmit AJAX returns { success: "true", message: "..." } on success
+    const ok = res.ok && (data.success === 'true' || data.success === true);
+
+    if (!ok) {
+      const apiMsg = data.message || 'Something went wrong. Please try again or email me directly at sameerghorsane@gmail.com.';
+      showNotice('error', `<i class="fa-solid fa-circle-exclamation"></i> ${apiMsg}`);
+      setSubmitting(false);
+      return;
+    }
+
     clearForm();
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+    setSubmitting(false);
 
     showNotice(
       'success',
-      '<i class="fa-solid fa-circle-check"></i> Thank you, ' + name.split(' ')[0] + '! Your message has been received. I will be in touch within one business day.'
+      '<i class="fa-solid fa-circle-check"></i> Thank you, ' + name.split(' ')[0] +
+      '! Your message has been received. I will be in touch within one business day.'
     );
-  }, 900);
+
+  } catch (err) {
+    showNotice(
+      'error',
+      '<i class="fa-solid fa-circle-exclamation"></i> Network error. Please check your connection and try again, or email me directly at sameerghorsane@gmail.com.'
+    );
+    setSubmitting(false);
+  }
 });
 
 // Clear notice when user starts typing again
