@@ -1,0 +1,83 @@
+# git diff --cached | grep -i -E "api[_-]?key|secret|password|token"
+# =============================================================================
+# .gitignore — Sameer Ghorsane (Clean Minimal)
+# =============================================================================
+
+# --- Secrets (NEVER commit) ---
+.env
+.env.*
+*.env
+*.key
+*.pem
+secrets.json
+config.local.js
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# --- Virtual environments ---
+venv/
+env/
+.venv/
+ENV/
+
+# --- Databases ---
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# --- Logs & temp files ---
+logs/
+*.log
+tmp/
+temp/
+*.tmp
+*.bak
+*.old
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+
+# --- OS files ---
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- Personal / local-only files ---
+drafts/
+notes/
+private/
+TODO.md
+NOTES.md
+contact-submissions.json
+contact-submissions.csv
+
+# --- Node / frontend (future-proof) ---
+node_modules/
+.cache/
+.parcel-cache/
+package-lock.json
+
+# --- Private CV (optional) ---
+# assets/cv/sameer-ghorsane-cv-private.pdf

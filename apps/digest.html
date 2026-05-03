@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Markets Digest — Sameer Ghorsane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  /* ===================== TOKENS ===================== */
+  :root {
+    --gold: #EABD23;
+    --gold-light: #FDF8E7;
+    --gold-border: rgba(234,189,35,0.35);
+    --gold-hover: #d4a91e;
+    --navy: #0F172A;
+    --navy-mid: #1E293B;
+    --navy-soft: #334155;
+    --text: #1E293B;
+    --text-muted: #64748B;
+    --text-light: #94A3B8;
+    --bg: #F8FAFC;
+    --bg-card: #FFFFFF;
+    --border: #E2E8F0;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,0.10), 0 12px 32px rgba(0,0,0,0.07);
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --coming-soon-overlay: rgba(15,23,42,0.72);
+  }
+
+  /* ===================== RESET ===================== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ===================== HEADER ===================== */
+  .site-header {
+    background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94A3B8;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .header-back:hover { color: var(--gold); }
+  .header-back svg { width: 16px; height: 16px; }
+  .header-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .header-logo span { color: var(--gold); }
+  .header-badge { display: none; }
+  .ft-menu { position: relative; }
+  .ft-badge {
+    font-size: 11px; font-weight: 600; background: rgba(234,189,35,0.15);
+    border: 1px solid rgba(234,189,35,0.3); color: var(--gold);
+    padding: 4px 12px 4px 10px; border-radius: 20px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 6px; transition: background 0.2s;
+  }
+  .ft-badge:hover { background: rgba(234,189,35,0.25); }
+  .ft-badge-arrow { font-size: 9px; transition: transform 0.2s; }
+  .ft-menu.open .ft-badge-arrow { transform: rotate(180deg); }
+  .ft-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: #1E293B; border: 1px solid rgba(234,189,35,0.2);
+    border-radius: 10px; padding: 6px; min-width: 200px; z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .ft-menu.open .ft-dropdown { display: block; }
+  .ft-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: 7px; text-decoration: none; color: #CBD5E1;
+    font-size: 13px; font-weight: 500; transition: all 0.15s;
+  }
+  .ft-item:hover { background: rgba(234,189,35,0.08); color: #EABD23; }
+  .ft-item.current { color: #EABD23; background: rgba(234,189,35,0.06); cursor: default; pointer-events: none; }
+  .ft-item-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* ===================== HERO ===================== */
+  .page-hero {
+    background: var(--navy);
+    padding: 10px 24px 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .page-hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .page-hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .page-hero p {
+    color: #94A3B8;
+    font-size: 12px;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    letter-spacing: 0.01em;
+  }
+  .live-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(234,189,35,0.1);
+    border: 1px solid rgba(234,189,35,0.25);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .live-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ===================== MAIN LAYOUT ===================== */
+  .main-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ===================== CATEGORY TABS ===================== */
+  .cat-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .cat-tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 18px;
+    border-radius: 24px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+  }
+  .cat-tab:hover {
+    border-color: var(--gold-border);
+    color: var(--text);
+    background: var(--gold-light);
+  }
+  .cat-tab.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+    font-weight: 600;
+  }
+  .cat-tab.active .cat-icon { opacity: 1; }
+  .cat-icon { font-size: 15px; }
+  .coming-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(234,189,35,0.18);
+    color: #92700e;
+    border: 1px solid rgba(234,189,35,0.4);
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 2px;
+  }
+
+  /* ===================== CATEGORY PANEL ===================== */
+  .cat-panel { display: none; }
+  .cat-panel.active { display: block; }
+
+  /* ===================== SUB-TABS ===================== */
+  .sub-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 4px;
+    background: #EEF2F7;
+    border-radius: 12px;
+    width: fit-content;
+  }
+  .sub-tab {
+    padding: 6px 16px;
+    border-radius: 9px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .sub-tab:hover { color: var(--text); background: rgba(255,255,255,0.6); }
+  .sub-tab.active {
+    background: var(--bg-card);
+    color: var(--navy);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  /* ===================== SOURCE TABS ===================== */
+  .source-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .source-tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .source-tab:hover {
+    border-color: var(--gold-border);
+    color: var(--text);
+    background: var(--gold-light);
+  }
+  .source-tab.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .add-source-btn {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1.5px dashed var(--border);
+    background: transparent;
+    color: var(--text-light);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .add-source-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+
+  /* ===================== TOOLBAR ===================== */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 16px 0 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .last-updated {
+    font-size: 12px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover {
+    border-color: var(--gold-border);
+    color: var(--navy);
+    background: var(--gold-light);
+  }
+  .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .refresh-btn svg { width: 14px; height: 14px; }
+
+  /* ===================== ARTICLE CARDS ===================== */
+  .articles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .article-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px 18px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.22s, border-color 0.22s, transform 0.18s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .article-card:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--gold-border);
+    transform: translateY(-1px);
+  }
+  .article-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 0 2px 2px 0;
+  }
+  .article-card:hover::before { opacity: 1; }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .source-badge {
+    background: var(--gold-light);
+    border: 1px solid var(--gold-border);
+    color: #92700e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 9px;
+    border-radius: 8px;
+  }
+  .time-ago {
+    font-size: 12px;
+    color: var(--text-light);
+    font-weight: 400;
+  }
+  .pinned-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(234,189,35,0.12);
+    border: 1px solid rgba(234,189,35,0.4);
+    color: var(--gold-hover);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 8px;
+  }
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--navy);
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s;
+  }
+  .article-card:hover .card-title { color: #0a0f1c; }
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+  .read-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold-hover);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: gap 0.18s;
+  }
+  .read-link:hover { gap: 8px; }
+
+  /* ===================== AI SUMMARY ===================== */
+  .ai-btn-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .ai-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    letter-spacing: 0.02em;
+  }
+  .ai-btn:hover { border-color: var(--gold-border); color: var(--navy); background: var(--gold-light); }
+  .ai-btn .ai-icon { font-size: 13px; }
+  .ai-btn.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .ai-summary-box {
+    background: linear-gradient(135deg, #fefce8 0%, #fdf8e7 100%);
+    border: 1px solid rgba(234,189,35,0.3);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .ai-summary-box.visible { display: block; }
+  .ai-summary-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold-hover);
+    margin-bottom: 6px;
+  }
+
+  /* ===================== SHARE BUTTONS ===================== */
+  .share-btns {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .share-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.18s;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-decoration: none;
+    position: relative;
+  }
+  .share-btn:hover { border-color: var(--gold-border); background: var(--gold-light); color: var(--navy); transform: scale(1.08); }
+  .share-btn[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--navy);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+  }
+  .share-btn svg { width: 14px; height: 14px; }
+  .copied-tip {
+    font-size: 11px;
+    color: #16a34a;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 3px;
+  }
+  .copied-tip.show { display: flex; }
+
+  /* ===================== PINNED SECTION ===================== */
+  .pinned-section {
+    margin-bottom: 24px;
+    display: none;
+  }
+  .pinned-section.has-pins { display: block; }
+  .pinned-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold-hover);
+  }
+  .pinned-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gold-border);
+  }
+
+  /* ===================== LOADING / EMPTY ===================== */
+  .skeleton-list { display: flex; flex-direction: column; gap: 14px; }
+  .skeleton-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  .skeleton-line {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+  .skeleton-line.title { height: 22px; width: 80%; }
+  .skeleton-line.badge { height: 14px; width: 80px; margin-bottom: 12px; }
+  .skeleton-line.desc { height: 14px; }
+  .skeleton-line.desc:nth-child(4) { width: 90%; }
+  .skeleton-line.desc:nth-child(5) { width: 70%; }
+  .skeleton-line.desc:nth-child(6) { width: 85%; }
+
+  .empty-state {
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--text-muted);
+  }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state h3 { font-family: var(--font-display); font-size: 20px; margin-bottom: 8px; color: var(--text); }
+  .empty-state p { font-size: 14px; max-width: 320px; margin: 0 auto; }
+
+  /* ===================== COMING SOON OVERLAY ===================== */
+  .coming-soon-panel {
+    position: relative;
+    min-height: 300px;
+  }
+  .coming-soon-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--coming-soon-overlay);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 10;
+    text-align: center;
+    padding: 32px;
+  }
+  .coming-soon-icon { font-size: 40px; }
+  .coming-soon-overlay h3 {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.01em;
+  }
+  .coming-soon-overlay p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+  .coming-soon-overlay .cs-badge {
+    background: rgba(234,189,35,0.2);
+    border: 1px solid rgba(234,189,35,0.4);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* ===================== DISCLAIMER ===================== */
+  .disclaimer-card {
+    background: var(--gold-light);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-top: 28px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .disclaimer-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .disclaimer-text { font-size: 13px; color: #7a5c10; line-height: 1.6; }
+  .disclaimer-text strong { font-weight: 700; color: #92700e; }
+
+  /* ===================== FEED CONFIG HINT ===================== */
+  .feed-slots {
+    background: #F1F5F9;
+    border: 1.5px dashed #CBD5E1;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-light);
+    display: none;
+  }
+  .feed-slots.visible { display: block; }
+  .feed-slots code {
+    background: #E2E8F0;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--navy-soft);
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 600px) {
+    .main-container { padding: 20px 14px 48px; }
+    .cat-tab { font-size: 12px; padding: 8px 13px; }
+    .article-card { padding: 18px 16px 14px; }
+    .card-title { font-size: 17px; }
+    .site-header { padding: 0 16px; }
+    .page-hero { padding: 28px 16px 24px; }
+    .share-btn { width: 28px; height: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =========== HEADER =========== -->
+<header class="site-header">
+  <a href="../index.html" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Sameer Ghorsane
+  </a>
+  <div class="ft-menu" id="ftMenu">
+    <div class="ft-badge" onclick="toggleFtMenu()">
+      ⚡ Finance Tools <span class="ft-badge-arrow">▼</span>
+    </div>
+    <div class="ft-dropdown">
+      <a href="rates.html" class="ft-item"><span class="ft-item-icon">📈</span> Live Rates</a>
+      <span class="ft-item current"><span class="ft-item-icon">📰</span> Markets Digest</span>
+      <a href="daily-word-lab.html" class="ft-item"><span class="ft-item-icon">💡</span> Daily Word Lab</a>
+      <a href="nepali-calendar.html" class="ft-item"><span class="ft-item-icon">📅</span> Nepali Calendar</a>
+    </div>
+  </div>
+</header>
+
+<!-- =========== HERO =========== -->
+<section class="page-hero">
+  <div class="live-dot">Live Feed</div>
+  <h1>Markets <em>Digest</em></h1>
+  <p>Curated financial news from the world's leading sources — updated in real time.</p>
+</section>
+
+<!-- =========== MAIN =========== -->
+<main class="main-container">
+
+  <!-- CATEGORY TABS -->
+  <nav class="cat-tabs" id="catTabs">
+    <button class="cat-tab active" data-cat="finance">
+      <span class="cat-icon">📊</span> Finance &amp; Economy
+    </button>
+    <button class="cat-tab" data-cat="markets">
+      <span class="cat-icon">📈</span> Share Markets
+    </button>
+    <button class="cat-tab" data-cat="crypto">
+      <span class="cat-icon">₿</span> Crypto
+      <span class="coming-badge">Soon</span>
+    </button>
+    <button class="cat-tab" data-cat="geopolitics">
+      <span class="cat-icon">🌐</span> Geopolitics
+      <span class="coming-badge">Soon</span>
+    </button>
+  </nav>
+
+  <!-- ========== FINANCE & ECONOMY ========== -->
+  <div class="cat-panel active" id="panel-finance">
+    <!-- Source Tabs -->
+    <div class="source-tabs" id="sourceTabs-finance"></div>
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <span class="last-updated" id="updated-finance">—</span>
+      <button class="refresh-btn" id="refreshBtn-finance">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div class="pinned-section" id="pinned-finance">
+      <div class="pinned-header">📌 Pinned</div>
+      <div class="articles-list" id="pinned-list-finance"></div>
+    </div>
+    <div class="articles-list" id="feed-finance"></div>
+  </div>
+
+  <!-- ========== SHARE MARKETS ========== -->
+  <div class="cat-panel" id="panel-markets">
+    <div class="sub-tabs" id="subTabs-markets"></div>
+    <div class="source-tabs" id="sourceTabs-markets"></div>
+    <div class="toolbar">
+      <span class="last-updated" id="updated-markets">—</span>
+      <button class="refresh-btn" id="refreshBtn-markets">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        Refresh
+      </button>
+    </div>
+    <div class="pinned-section" id="pinned-markets">
+      <div class="pinned-header">📌 Pinned</div>
+      <div class="articles-list" id="pinned-list-markets"></div>
+    </div>
+    <div class="articles-list" id="feed-markets"></div>
+  </div>
+
+  <!-- ========== CRYPTO ========== -->
+  <div class="cat-panel" id="panel-crypto">
+    <div class="coming-soon-panel">
+      <!-- Ghost preview of how it'll look -->
+      <div class="source-tabs" style="pointer-events:none;opacity:0.3;margin-bottom:16px;">
+        <button class="source-tab active">CoinDesk</button>
+        <button class="source-tab">CoinTelegraph</button>
+        <button class="source-tab">Decrypt</button>
+        <button class="source-tab">Bitcoin Magazine</button>
+        <button class="source-tab">The Block</button>
+        <button class="add-source-btn">+ Add Feed</button>
+      </div>
+      <div class="skeleton-list" style="pointer-events:none;opacity:0.3;">
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc" style="width:65%"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title" style="width:65%"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc" style="width:80%"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title" style="width:72%"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc" style="width:90%"></div></div>
+      </div>
+      <div class="coming-soon-overlay">
+        <div class="coming-soon-icon">₿</div>
+        <div class="cs-badge">Coming Soon</div>
+        <h3>Crypto Market Feed</h3>
+        <p>Global cryptocurrency news from CoinDesk, CoinTelegraph, Decrypt, Bitcoin Magazine &amp; The Block. Launching soon.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== GEOPOLITICS ========== -->
+  <div class="cat-panel" id="panel-geopolitics">
+    <div class="coming-soon-panel">
+      <div class="sub-tabs" style="pointer-events:none;opacity:0.3;margin-bottom:16px;">
+        <button class="sub-tab active">🌍 World</button>
+        <button class="sub-tab">🇦🇪 UAE</button>
+        <button class="sub-tab">🇮🇳 India</button>
+        <button class="sub-tab">🇳🇵 Nepal</button>
+      </div>
+      <div class="skeleton-list" style="pointer-events:none;opacity:0.3;">
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title" style="width:70%"></div><div class="skeleton-line desc"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line badge"></div><div class="skeleton-line title" style="width:75%"></div><div class="skeleton-line desc"></div><div class="skeleton-line desc" style="width:80%"></div></div>
+      </div>
+      <div class="coming-soon-overlay">
+        <div class="coming-soon-icon">🌐</div>
+        <div class="cs-badge">Coming Soon</div>
+        <h3>Geopolitics Feed</h3>
+        <p>Regional &amp; global political news across World, UAE, India &amp; Nepal — from Reuters, Al Jazeera, The Hindu, Himalayan Times &amp; more.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-card">
+    <span class="disclaimer-icon">⚠️</span>
+    <div class="disclaimer-text">
+      <strong>Disclaimer:</strong> This digest aggregates news from third-party RSS feeds for informational purposes only.
+      Content is the property of respective publishers. Nothing here constitutes financial, investment, or legal advice.
+      Always verify information from primary sources before making any decisions.
+    </div>
+  </div>
+
+</main>
+
+<script>
+/* =========================================================
+   DATA CONFIGURATION
+   Add/remove RSS feeds by editing these arrays.
+   Each feed: { label, url }
+   ========================================================= */
+
+const PROXY = 'https://api.allorigins.win/get?url=';
+const MAX_ARTICLES = 15;
+const MAX_PINS = 5;
+
+/* ---------- FINANCE & ECONOMY ---------- */
+const FINANCE_SOURCES = [
+  { label: 'CNBC Finance',   url: 'https://www.cnbc.com/id/10000664/device/rss/rss.html' },
+  { label: 'Financial Times',url: 'https://www.ft.com/rss/home/uk' },
+  { label: 'Reuters Biz',    url: 'https://feeds.reuters.com/reuters/businessNews' },
+  { label: 'Seeking Alpha',  url: 'https://seekingalpha.com/market-news/index.xml' },
+  // ── PLACEHOLDERS (replace null with real RSS URL to activate) ──
+  { label: 'Bloomberg',      url: null }, // e.g. https://feeds.bloomberg.com/markets/news.rss
+  { label: 'WSJ Markets',    url: null }, // e.g. https://feeds.wsj.com/wsj/xml/rss/3_7031.xml
+  { label: 'The Economist',  url: null }, // e.g. https://www.economist.com/finance-and-economics/rss.xml
+];
+
+/* ---------- SHARE MARKETS ---------- */
+const MARKETS_SUBS = {
+  world: {
+    label: '🌍 World',
+    sources: [
+      { label: 'Yahoo Finance', url: 'https://finance.yahoo.com/news/rssindex' },
+      { label: 'MarketWatch',   url: 'https://feeds.marketwatch.com/marketwatch/topstories/' },
+      { label: 'Investing.com', url: null }, // https://www.investing.com/rss/news.rss
+      { label: 'Bloomberg Mkt', url: null },
+      { label: 'FT Markets',    url: null },
+      { label: 'Reuters Mkt',   url: null },
+      { label: 'CNBC Markets',  url: 'https://www.cnbc.com/id/20910258/device/rss/rss.html' },
+    ]
+  },
+  uae: {
+    label: '🇦🇪 UAE',
+    sources: [
+      { label: 'Khaleej Times', url: 'https://www.khaleejtimes.com/business/rss.xml' },
+      { label: 'Gulf News Biz', url: 'https://gulfnews.com/rss/business' },
+      { label: 'The National',  url: 'https://www.thenationalnews.com/rss/business/' },
+      { label: 'Arabian Biz',   url: null }, // https://www.arabianbusiness.com/rss
+      { label: 'DFM News',      url: null },
+      { label: 'ADX News',      url: null },
+      { label: 'ADNOC Releases',url: null },
+    ]
+  },
+  india: {
+    label: '🇮🇳 India',
+    sources: [
+      { label: 'Economic Times',url: 'https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms' },
+      { label: 'Moneycontrol',  url: 'https://www.moneycontrol.com/rss/marketreports.xml' },
+      { label: 'BSE India',     url: null },
+      { label: 'NSE News',      url: null },
+      { label: 'Mint Markets',  url: null }, // https://www.livemint.com/rss/markets
+      { label: 'NDTV Profit',   url: null },
+      { label: 'Business Std',  url: null },
+    ]
+  },
+  nepal: {
+    label: '🇳🇵 Nepal',
+    sources: [
+      { label: 'Himalayan Times', url: 'https://thehimalayantimes.com/feed/' },
+      { label: 'Kathmandu Post',  url: 'https://kathmandupost.com/rss' },
+      { label: 'Nepal Stock',     url: null }, // NEPSE related
+      { label: 'OnlineKhabar',    url: null },
+      { label: 'Republica',       url: null },
+      { label: 'My Republica',    url: null },
+      { label: 'Nepal Monitor',   url: null },
+    ]
+  }
+};
+
+/* ---------- CRYPTO (wired, coming soon overlay active) ---------- */
+const CRYPTO_SOURCES = [
+  { label: 'CoinDesk',       url: 'https://www.coindesk.com/arc/outboundfeeds/rss/' },
+  { label: 'CoinTelegraph',  url: 'https://cointelegraph.com/rss' },
+  { label: 'Decrypt',        url: 'https://decrypt.co/feed' },
+  { label: 'Bitcoin Mag',    url: null },
+  { label: 'The Block',      url: null },
+  { label: 'Blockworks',     url: null },
+  { label: 'CryptoSlate',    url: null },
+];
+
+/* ---------- GEOPOLITICS (wired, coming soon overlay active) ---------- */
+const GEOPOLITICS_SUBS = {
+  world:  { label: '🌍 World',  sources: [
+    { label: 'Al Jazeera',   url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+    { label: 'Reuters World', url: 'https://feeds.reuters.com/Reuters/worldNews' },
+    { label: 'BBC World',     url: null },
+    { label: 'Foreign Policy',url: null },
+    { label: 'The Guardian',  url: null },
+    { label: 'DW News',       url: null },
+    { label: 'VOA News',      url: null },
+  ]},
+  uae:    { label: '🇦🇪 UAE',   sources: [
+    { label: 'Gulf News',     url: 'https://gulfnews.com/rss/uae' },
+    { label: 'The National',  url: 'https://www.thenationalnews.com/rss/uae/' },
+    { label: 'Khaleej Times', url: null },
+    { label: 'WAM Agency',    url: null },
+    { label: 'Emirates247',   url: null },
+    { label: 'Arabia MSN',    url: null },
+    { label: 'MENA Report',   url: null },
+  ]},
+  india:  { label: '🇮🇳 India', sources: [
+    { label: 'The Hindu',     url: 'https://www.thehindu.com/news/national/feeder/default.rss' },
+    { label: 'Indian Express',url: null },
+    { label: 'NDTV',          url: null },
+    { label: 'Times of India',url: null },
+    { label: 'LiveMint',      url: null },
+    { label: 'Hindustan Times',url: null },
+    { label: 'The Wire',      url: null },
+  ]},
+  nepal:  { label: '🇳🇵 Nepal', sources: [
+    { label: 'Kathmandu Post',url: 'https://kathmandupost.com/rss' },
+    { label: 'Himalayan Times',url: 'https://thehimalayantimes.com/feed/' },
+    { label: 'Republica',     url: null },
+    { label: 'OnlineKhabar',  url: null },
+    { label: 'Nepal Monitor', url: null },
+    { label: 'Setopati',      url: null },
+    { label: 'Ratopati',      url: null },
+  ]},
+};
+
+/* =========================================================
+   AI SUMMARY CONFIG (placeholder — add keys to activate)
+   ========================================================= */
+const AI_CONFIG = {
+  claude: {
+    label: '✦ Claude',
+    enabled: false, // set true + add key to activate
+    apiKey: '',     // ANTHROPIC_API_KEY
+    model: 'claude-opus-4-5',
+  },
+  openai: {
+    label: '⬡ GPT-4o',
+    enabled: false, // set true + add key to activate
+    apiKey: '',     // OPENAI_API_KEY
+    model: 'gpt-4o',
+  }
+};
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let activeCat = 'finance';
+let activeSubTab = { markets: 'world', geopolitics: 'world' };
+let activeSource = { finance: 0, markets: 0 };
+let feedCache = {}; // key: "cat|sub|srcIdx" -> articles[]
+let pinnedIds = JSON.parse(localStorage.getItem('mg_pins') || '{}');
+// pinnedIds: { "finance": ["url1","url2",...], "markets": [...] }
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function stripHtml(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html || '';
+  return d.textContent || d.innerText || '';
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (isNaN(diff)) return '';
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
+
+function truncate(str, len) {
+  if (!str) return '';
+  str = str.trim();
+  return str.length > len ? str.slice(0, len).trimEnd() + '…' : str;
+}
+
+function catPinKey(cat, sub) {
+  return sub ? `${cat}__${sub}` : cat;
+}
+
+function getPins(cat, sub) {
+  const k = catPinKey(cat, sub);
+  return pinnedIds[k] || [];
+}
+
+function savePins(cat, sub, arr) {
+  const k = catPinKey(cat, sub);
+  pinnedIds[k] = arr;
+  localStorage.setItem('mg_pins', JSON.stringify(pinnedIds));
+}
+
+/* =========================================================
+   SHARE HELPERS
+   ========================================================= */
+function shareLinks(title, url) {
+  const enc = encodeURIComponent;
+  return {
+    whatsapp:  `https://wa.me/?text=${enc(title + ' ' + url)}`,
+    gmail:     `mailto:?subject=${enc(title)}&body=${enc(url)}`,
+    twitter:   `https://twitter.com/intent/tweet?text=${enc(title)}&url=${enc(url)}`,
+    linkedin:  `https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`,
+    messenger: `https://www.facebook.com/dialog/send?link=${enc(url)}&app_id=291494419107518&redirect_uri=${enc(url)}`,
+  };
+}
+
+function buildShareBtns(title, url) {
+  const links = shareLinks(title, url);
+  return `
+    <div class="share-btns">
+      <a class="share-btn" href="${links.whatsapp}" target="_blank" rel="noopener" data-tip="WhatsApp" onclick="event.stopPropagation()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.845L.057 23.571l5.846-1.532A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.876 0-3.636-.49-5.164-1.348l-.369-.22-3.833 1.005 1.019-3.722-.239-.382A9.957 9.957 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      </a>
+      <a class="share-btn" href="${links.gmail}" data-tip="Email" onclick="event.stopPropagation()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-.896.72-1.636 1.636-1.636h.9L12 11.09l9.464-7.27h.9A1.636 1.636 0 0124 5.457z"/></svg>
+      </a>
+      <a class="share-btn" href="${links.twitter}" target="_blank" rel="noopener" data-tip="X / Twitter" onclick="event.stopPropagation()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a class="share-btn" href="${links.linkedin}" target="_blank" rel="noopener" data-tip="LinkedIn" onclick="event.stopPropagation()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <button class="share-btn" data-tip="Copy Link" onclick="copyLink(event,'${url.replace(/'/g,"\\'")}',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      </button>
+      <span class="copied-tip" id="copied-${btoa(url).slice(0,8)}">✓ Copied</span>
+    </div>`;
+}
+
+function copyLink(e, url, btn) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(url).then(() => {
+    const id = 'copied-' + btoa(url).slice(0,8);
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2000); }
+  });
+}
+
+/* =========================================================
+   AI SUMMARY (placeholder)
+   ========================================================= */
+async function generateSummary(provider, title, desc, boxEl) {
+  const cfg = AI_CONFIG[provider];
+  if (!cfg.enabled || !cfg.apiKey) {
+    boxEl.innerHTML = `<div class="ai-summary-label">${cfg.label} Summary</div>
+      <em style="color:var(--text-light);font-size:12px;">API key not configured. Add your key in AI_CONFIG inside digest.html.</em>`;
+    boxEl.classList.add('visible');
+    return;
+  }
+  boxEl.innerHTML = `<div class="ai-summary-label">${cfg.label} Summary</div><em>Generating…</em>`;
+  boxEl.classList.add('visible');
+  try {
+    let result = '';
+    if (provider === 'claude') {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'x-api-key': cfg.apiKey, 'anthropic-version':'2023-06-01' },
+        body: JSON.stringify({ model: cfg.model, max_tokens: 200,
+          messages: [{ role:'user', content:`Summarise this finance news article in 3-4 clear sentences for a professional audience.\n\nTitle: ${title}\n\nContent: ${desc}` }]
+        })
+      });
+      const d = await r.json();
+      result = d.content?.[0]?.text || 'Could not generate summary.';
+    } else {
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${cfg.apiKey}` },
+        body: JSON.stringify({ model: cfg.model, max_tokens: 200,
+          messages: [
+            { role:'system', content:'You are a concise financial news summariser.' },
+            { role:'user', content:`Summarise in 3-4 sentences for a professional:\n\nTitle: ${title}\n\n${desc}` }
+          ]
+        })
+      });
+      const d = await r.json();
+      result = d.choices?.[0]?.message?.content || 'Could not generate summary.';
+    }
+    boxEl.innerHTML = `<div class="ai-summary-label">${cfg.label} Summary</div>${result}`;
+  } catch(err) {
+    boxEl.innerHTML = `<div class="ai-summary-label">${cfg.label} Summary</div><em style="color:#e74c3c">Error: ${err.message}</em>`;
+  }
+}
+
+function buildAiButtons(title, desc) {
+  const cDis = AI_CONFIG.claude.enabled ? '' : 'disabled';
+  const oDis = AI_CONFIG.openai.enabled ? '' : 'disabled';
+  const cTip = AI_CONFIG.claude.enabled ? '' : ' (add API key)';
+  const oTip = AI_CONFIG.openai.enabled ? '' : ' (add API key)';
+  return `
+    <div class="ai-btn-row">
+      <button class="ai-btn ${cDis}" onclick="event.stopPropagation();toggleSummary(this,'claude',\`${title.replace(/`/g,"'")}\`,\`${desc.replace(/`/g,"'")}\`)">
+        <span class="ai-icon">✦</span> Claude${cTip}
+      </button>
+      <button class="ai-btn ${oDis}" onclick="event.stopPropagation();toggleSummary(this,'openai',\`${title.replace(/`/g,"'")}\`,\`${desc.replace(/`/g,"'")}\`)">
+        <span class="ai-icon">⬡</span> GPT-4o${oTip}
+      </button>
+    </div>
+    <div class="ai-summary-box"></div>`;
+}
+
+function toggleSummary(btn, provider, title, desc) {
+  const box = btn.closest('.ai-btn-row').nextElementSibling;
+  if (box.classList.contains('visible')) { box.classList.remove('visible'); return; }
+  generateSummary(provider, title, desc, box);
+}
+
+/* =========================================================
+   FETCH & PARSE RSS
+   ========================================================= */
+async function fetchFeed(url) {
+  const res = await fetch(PROXY + encodeURIComponent(url));
+  const json = await res.json();
+  const text = json.contents;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/xml');
+  const items = [...doc.querySelectorAll('item, entry')];
+  const parsed = items.map(item => {
+    const get = (tag) => item.querySelector(tag)?.textContent?.trim() || '';
+    const getAttr = (tag, attr) => item.querySelector(tag)?.getAttribute(attr) || '';
+    const link = get('link') || getAttr('link', 'href') || '';
+    const pubDate = get('pubDate') || get('published') || get('updated') || '';
+    const desc = stripHtml(get('description') || get('summary') || get('content') || '');
+    return {
+      title: stripHtml(get('title')),
+      link,
+      description: truncate(desc, 600),
+      pubDate,
+      timestamp: new Date(pubDate).getTime() || 0,
+    };
+  }).filter(a => a.title && a.link);
+  // Sort newest first
+  parsed.sort((a, b) => b.timestamp - a.timestamp);
+  return parsed.slice(0, MAX_ARTICLES);
+}
+
+/* =========================================================
+   RENDER ARTICLE CARD
+   ========================================================= */
+function renderCard(article, sourceLabel, cat, sub, isPinned = false) {
+  const pins = getPins(cat, sub);
+  const alreadyPinned = pins.includes(article.link);
+  const pinCount = pins.length;
+  const canPin = !alreadyPinned && pinCount < MAX_PINS;
+
+  return `
+    <div class="article-card" onclick="window.open('${article.link.replace(/'/g,"\\'")}','_blank')">
+      <div class="card-meta">
+        <span class="source-badge">${sourceLabel}</span>
+        <span class="time-ago">${timeAgo(article.pubDate)}</span>
+        ${isPinned ? '<span class="pinned-badge">📌 Pinned</span>' : ''}
+      </div>
+      <h2 class="card-title">${article.title}</h2>
+      ${article.description ? `<p class="card-desc">${article.description}</p>` : ''}
+      ${buildAiButtons(article.title, article.description)}
+      <div class="card-footer">
+        <span class="read-link">Read full article ↗</span>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          ${buildShareBtns(article.title, article.link)}
+          ${!isPinned && canPin ? `
+            <button class="share-btn" data-tip="Pin article"
+              onclick="event.stopPropagation();pinArticle('${cat}','${sub||''}','${article.link.replace(/'/g,"\\'")}',this)">
+              📌
+            </button>` : ''}
+          ${alreadyPinned && !isPinned ? '' : ''}
+          ${isPinned ? `
+            <button class="share-btn" data-tip="Unpin"
+              onclick="event.stopPropagation();unpinArticle('${cat}','${sub||''}','${article.link.replace(/'/g,"\\'")}')">
+              ✕
+            </button>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* =========================================================
+   PIN MANAGEMENT
+   ========================================================= */
+function pinArticle(cat, sub, url, btn) {
+  const pins = getPins(cat, sub);
+  if (pins.length >= MAX_PINS) { alert(`Maximum ${MAX_PINS} pins per section.`); return; }
+  if (!pins.includes(url)) { pins.push(url); savePins(cat, sub, pins); }
+  // Re-render current view
+  const state = getCurrentCatState();
+  loadArticles(state.cat, state.sub, state.srcIdx, true);
+}
+
+function unpinArticle(cat, sub, url) {
+  const pins = getPins(cat, sub).filter(u => u !== url);
+  savePins(cat, sub, pins);
+  const state = getCurrentCatState();
+  loadArticles(state.cat, state.sub, state.srcIdx, true);
+}
+
+function getCurrentCatState() {
+  const cat = activeCat;
+  const sub = (cat === 'markets') ? activeSubTab.markets : (cat === 'geopolitics' ? activeSubTab.geopolitics : null);
+  const srcIdx = activeSource[cat] || 0;
+  return { cat, sub, srcIdx };
+}
+
+/* =========================================================
+   RENDER FEED
+   ========================================================= */
+function showSkeleton(feedEl) {
+  feedEl.innerHTML = [1,2,3,4,5].map(() => `
+    <div class="skeleton-card">
+      <div class="skeleton-line badge"></div>
+      <div class="skeleton-line title"></div>
+      <div class="skeleton-line desc"></div>
+      <div class="skeleton-line desc"></div>
+      <div class="skeleton-line desc" style="width:68%"></div>
+    </div>`).join('');
+}
+
+function showEmpty(feedEl, msg) {
+  feedEl.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <h3>No articles found</h3>
+      <p>${msg || 'This feed returned no parseable items. Try refreshing or switch to another source.'}</p>
+    </div>`;
+}
+
+async function loadArticles(cat, sub, srcIdx, fromCache = false) {
+  const cacheKey = [cat, sub||'', srcIdx].join('|');
+  const feedEl   = document.getElementById('feed-' + cat);
+  const updEl    = document.getElementById('updated-' + cat);
+  const pinEl    = document.getElementById('pinned-' + cat);
+  const pinListEl= document.getElementById('pinned-list-' + cat);
+  if (!feedEl) return;
+
+  // Get sources for this context
+  let sources;
+  if (cat === 'finance') sources = FINANCE_SOURCES;
+  else if (cat === 'markets') sources = MARKETS_SUBS[sub]?.sources || [];
+  else if (cat === 'crypto') sources = CRYPTO_SOURCES;
+  else if (cat === 'geopolitics') sources = GEOPOLITICS_SUBS[sub]?.sources || [];
+  else sources = [];
+
+  const src = sources[srcIdx];
+  if (!src) { showEmpty(feedEl, 'No source configured.'); return; }
+
+  // If no URL, show placeholder
+  if (!src.url) {
+    showEmpty(feedEl, `"${src.label}" is a reserved slot. Add an RSS URL in the sources config to activate it.`);
+    updEl.textContent = '—';
+    return;
+  }
+
+  // Check cache
+  if (!fromCache && feedCache[cacheKey]) {
+    renderArticles(feedEl, pinEl, pinListEl, feedCache[cacheKey], src.label, cat, sub);
+    return;
+  }
+
+  showSkeleton(feedEl);
+  try {
+    const articles = await fetchFeed(src.url);
+    feedCache[cacheKey] = articles;
+    renderArticles(feedEl, pinEl, pinListEl, articles, src.label, cat, sub);
+    updEl.textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  } catch (err) {
+    showEmpty(feedEl, `Could not load "${src.label}". The feed may be temporarily unavailable. Try switching source or refreshing.`);
+    updEl.textContent = 'Failed to load';
+    console.warn('Feed error:', err);
+  }
+}
+
+function renderArticles(feedEl, pinEl, pinListEl, articles, sourceLabel, cat, sub) {
+  const pins = getPins(cat, sub);
+  const pinnedArticles = articles.filter(a => pins.includes(a.link));
+  const regularArticles = articles.filter(a => !pins.includes(a.link));
+
+  // Render pinned section
+  if (pinListEl) {
+    if (pinnedArticles.length > 0) {
+      pinEl.classList.add('has-pins');
+      pinListEl.innerHTML = pinnedArticles.map(a => renderCard(a, sourceLabel, cat, sub, true)).join('');
+    } else {
+      pinEl.classList.remove('has-pins');
+      pinListEl.innerHTML = '';
+    }
+  }
+
+  // Render regular articles
+  if (regularArticles.length === 0) {
+    showEmpty(feedEl, 'All articles from this feed are pinned, or the feed returned no items.');
+  } else {
+    feedEl.innerHTML = regularArticles.map(a => renderCard(a, sourceLabel, cat, sub, false)).join('');
+  }
+}
+
+/* =========================================================
+   SOURCE TABS BUILDER
+   ========================================================= */
+function buildSourceTabs(cat, sources, activeIdx) {
+  const container = document.getElementById('sourceTabs-' + cat);
+  if (!container) return;
+  container.innerHTML = sources.map((s, i) => `
+    <button class="source-tab ${i === activeIdx ? 'active' : ''} ${!s.url ? 'placeholder' : ''}"
+      data-idx="${i}" ${!s.url ? 'title="Placeholder — add RSS URL to activate"' : ''}>
+      ${s.label}${!s.url ? ' ○' : ''}
+    </button>
+  `).join('') + `<button class="add-source-btn" title="Add more feeds by editing FINANCE_SOURCES / MARKETS_SUBS etc. in the script">+ Add Feed</button>`;
+
+  container.querySelectorAll('.source-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      activeSource[cat] = idx;
+      container.querySelectorAll('.source-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const sub = (cat === 'markets') ? activeSubTab.markets : (cat === 'geopolitics' ? activeSubTab.geopolitics : null);
+      loadArticles(cat, sub, idx);
+    });
+  });
+}
+
+/* =========================================================
+   SUB-TABS BUILDER
+   ========================================================= */
+function buildSubTabs(cat, subsMap, activeSub) {
+  const container = document.getElementById('subTabs-' + cat);
+  if (!container) return;
+  container.innerHTML = Object.entries(subsMap).map(([key, sub]) =>
+    `<button class="sub-tab ${key === activeSub ? 'active' : ''}" data-sub="${key}">${sub.label}</button>`
+  ).join('');
+
+  container.querySelectorAll('.sub-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sub = btn.dataset.sub;
+      activeSubTab[cat] = sub;
+      container.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeSource[cat] = 0;
+      const sources = subsMap[sub]?.sources || [];
+      buildSourceTabs(cat, sources, 0);
+      loadArticles(cat, sub, 0);
+    });
+  });
+}
+
+/* =========================================================
+   CATEGORY TABS
+   ========================================================= */
+document.getElementById('catTabs').querySelectorAll('.cat-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cat = btn.dataset.cat;
+    activeCat = cat;
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.cat-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + cat)?.classList.add('active');
+    initCat(cat);
+  });
+});
+
+/* =========================================================
+   REFRESH BUTTONS
+   ========================================================= */
+['finance', 'markets'].forEach(cat => {
+  const btn = document.getElementById('refreshBtn-' + cat);
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    btn.classList.add('spinning');
+    const state = getCurrentCatState();
+    // Clear cache for active context
+    const k = [state.cat, state.sub||'', state.srcIdx].join('|');
+    delete feedCache[k];
+    loadArticles(state.cat, state.sub, state.srcIdx).then(() => {
+      setTimeout(() => btn.classList.remove('spinning'), 600);
+    });
+  });
+});
+
+/* =========================================================
+   INIT CATEGORY
+   ========================================================= */
+function initCat(cat) {
+  if (cat === 'finance') {
+    buildSourceTabs('finance', FINANCE_SOURCES, activeSource.finance || 0);
+    loadArticles('finance', null, activeSource.finance || 0);
+  } else if (cat === 'markets') {
+    const sub = activeSubTab.markets || 'world';
+    buildSubTabs('markets', MARKETS_SUBS, sub);
+    buildSourceTabs('markets', MARKETS_SUBS[sub].sources, 0);
+    loadArticles('markets', sub, 0);
+  }
+  // crypto & geopolitics: overlay handles it, no fetch needed
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+initCat('finance');
+
+/* ── FINANCE TOOLS MENU ── */
+function toggleFtMenu() {
+  document.getElementById('ftMenu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ftMenu')) {
+    document.getElementById('ftMenu')?.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

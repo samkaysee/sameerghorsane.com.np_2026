@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Word Lab — Sameer Ghorsane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#EABD23; --gold-light:#FDF8E7; --gold-border:#F0D060;
+  --navy:#0F172A; --navy-mid:#1E2D45; --slate:#334155; --muted:#64748B;
+  --light:#F8FAFC; --white:#ffffff; --border:#E2E8F0;
+  --green:#10B981; --red:#EF4444;
+  --serif:'Cormorant Garamond',serif; --sans:'DM Sans',sans-serif;
+  --radius:12px; --shadow:0 4px 24px rgba(15,23,42,0.08);
+  --shadow-lg:0 8px 40px rgba(15,23,42,0.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:#0F172A;color:#E2E8F0;min-height:100vh}
+
+/* HEADER */
+.app-header{background:rgba(10,15,30,0.95);border-bottom:1px solid rgba(255,255,255,0.07);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(18px)}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:#94A3B8;text-decoration:none;padding:6px 12px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;transition:all 0.2s}
+.back-btn:hover{background:rgba(255,255,255,0.06);color:#EABD23}
+.header-brand{display:flex;align-items:center;gap:10px}
+.sg-logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:14px;color:var(--navy)}
+.header-name{font-size:13px;font-weight:600;color:#E2E8F0}
+.tools-badge{display:none}
+.ft-menu{position:relative}
+.ft-badge{background:rgba(234,189,35,0.12);border:1px solid rgba(234,189,35,0.3);color:#EABD23;font-size:11px;font-weight:600;padding:4px 12px 4px 10px;border-radius:20px;letter-spacing:0.3px;text-transform:uppercase;cursor:pointer;user-select:none;display:flex;align-items:center;gap:6px;transition:background 0.2s}
+.ft-badge:hover{background:rgba(234,189,35,0.22)}
+.ft-badge-arrow{font-size:9px;transition:transform 0.2s}
+.ft-menu.open .ft-badge-arrow{transform:rotate(180deg)}
+.ft-dropdown{display:none;position:absolute;top:calc(100% + 8px);right:0;background:#1E293B;border:1px solid rgba(234,189,35,0.2);border-radius:10px;padding:6px;min-width:200px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.ft-menu.open .ft-dropdown{display:block}
+.ft-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;text-decoration:none;color:#CBD5E1;font-size:13px;font-weight:500;transition:all 0.15s}
+.ft-item:hover{background:rgba(234,189,35,0.08);color:#EABD23}
+.ft-item.current{color:#EABD23;background:rgba(234,189,35,0.06);cursor:default;pointer-events:none}
+.ft-item-icon{font-size:16px;width:20px;text-align:center}
+
+/* LOADING */
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:16px}
+.spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--muted)}
+
+/* MAIN */
+.main-container{max-width:860px;margin:0 auto;padding:28px 20px 60px}
+
+/* CATEGORY TABS */
+.category-tabs{display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.category-tabs::-webkit-scrollbar{display:none}
+.cat-tab{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);font-size:13px;font-weight:500;color:#94A3B8;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0}
+.cat-tab:hover{border-color:var(--gold);color:#EABD23}
+.cat-tab.active{background:var(--gold);border-color:var(--gold);color:#0F172A;font-weight:600}
+.cat-tab.placeholder{opacity:0.4;cursor:not-allowed;pointer-events:none;border-style:dashed}
+.cat-icon{font-size:15px}
+.cat-badge{background:var(--navy);color:var(--white);font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;letter-spacing:0.5px}
+.cat-tab.active .cat-badge{background:rgba(15,23,42,0.2);color:var(--navy)}
+
+/* PAGE TITLE */
+.page-title-row{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.page-title{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:#F1F5F9}
+.page-subtitle{font-size:12px;color:var(--muted)}
+
+/* VIEW TABS */
+.view-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.07);padding:4px;border-radius:10px;margin-bottom:24px;width:fit-content}
+.view-tab{padding:7px 16px;border-radius:7px;font-size:13px;font-weight:500;color:#94A3B8;cursor:pointer;transition:all 0.18s;border:none;background:transparent}
+.view-tab.active{background:rgba(255,255,255,0.12);color:#F1F5F9;box-shadow:0 1px 4px rgba(15,23,42,0.1);font-weight:600}
+
+/* META ROW */
+.meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.date-label{font-size:13px;color:var(--muted);font-weight:500}
+.progress-pill{background:var(--gold-light);border:1px solid var(--gold-border);color:var(--navy);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px}
+
+/* NAV ROW */
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.nav-btn{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);font-size:13px;font-weight:500;color:#94A3B8;cursor:pointer;transition:all 0.2s}
+.nav-btn:hover:not(:disabled){border-color:var(--gold);color:#EABD23;background:rgba(234,189,35,0.08)}
+.nav-btn:disabled{opacity:0.35;cursor:not-allowed}
+.nav-center{display:flex;align-items:center;gap:10px}
+.nav-counter{font-size:13px;color:var(--muted);font-weight:500}
+.today-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:8px;background:var(--gold);border:none;color:var(--navy);font-size:12px;font-weight:600;cursor:pointer;transition:opacity 0.2s}
+.today-btn:hover{opacity:0.85}
+
+/* TERM CARD */
+.term-card{background:#1E293B;border-radius:var(--radius);border-top:4px solid var(--gold);box-shadow:0 4px 24px rgba(0,0,0,0.3);padding:32px;margin-bottom:16px;animation:fadeUp 0.3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.term-eyebrow{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.term-name{font-family:var(--serif);font-size:2.8rem;font-weight:600;color:#F1F5F9;line-height:1.1;margin-bottom:14px}
+.term-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.pos-pill{background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.3px}
+.cat-label{font-size:12px;color:var(--muted);font-weight:500}
+.divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:20px 0}
+.def-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.def-text{font-family:var(--serif);font-size:1.18rem;color:#CBD5E1;line-height:1.75;margin-bottom:24px}
+.examples-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.example-block{background:#F8FAFC;border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:10px}
+.example-block p{font-family:var(--serif);font-size:1.05rem;color:var(--slate);line-height:1.7;font-style:italic}
+.card-actions{display:flex;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:wrap}
+.action-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:500;color:var(--slate);cursor:pointer;transition:all 0.2s}
+.action-btn:hover{border-color:var(--gold);color:var(--navy);background:var(--gold-light)}
+.action-btn.bookmarked{background:var(--gold-light);border-color:var(--gold);color:var(--navy)}
+
+/* STATS CARD */
+.stats-card{background:var(--navy);border-radius:var(--radius);padding:20px 24px;color:var(--white);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-num{font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--gold)}
+.stat-lbl{font-size:11px;color:rgba(255,255,255,0.55);font-weight:500;margin-top:2px}
+
+/* ARCHIVE */
+.archive-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.archive-title{font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--navy)}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:9px;padding:8px 14px;width:240px}
+.search-box input{border:none;outline:none;font-size:13px;color:var(--navy);font-family:var(--sans);width:100%;background:transparent}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.18s}
+.filter-chip:hover{border-color:var(--gold);color:var(--navy)}
+.filter-chip.active{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:600}
+.archive-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.archive-card{background:var(--white);border-radius:10px;border:1.5px solid var(--border);padding:18px;cursor:pointer;transition:all 0.2s;position:relative}
+.archive-card:hover{border-color:var(--gold);box-shadow:var(--shadow);transform:translateY(-2px)}
+.archive-card.is-today{border-color:var(--gold);border-width:2px}
+.archive-card.is-today::before{content:'Today';position:absolute;top:-1px;right:12px;background:var(--gold);font-size:10px;font-weight:700;padding:2px 8px;border-radius:0 0 6px 6px;color:var(--navy)}
+.arc-term{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--navy);margin-bottom:4px}
+.arc-pos{font-size:11px;color:var(--muted);margin-bottom:8px}
+.arc-def{font-size:12px;color:var(--slate);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.arc-cat{display:inline-block;margin-top:10px;font-size:10px;font-weight:600;color:var(--muted);background:var(--light);padding:2px 8px;border-radius:10px}
+.arc-bookmark{position:absolute;top:14px;right:14px;font-size:14px}
+.no-results{text-align:center;padding:48px 0;color:var(--muted);font-size:14px}
+
+/* QUIZ */
+.quiz-header{margin-bottom:24px}
+.quiz-title{font-family:var(--serif);font-size:1.8rem;font-weight:600;color:var(--navy);margin-bottom:6px}
+.quiz-sub{font-size:13px;color:var(--muted)}
+.quiz-progress-bar{height:5px;background:var(--border);border-radius:10px;margin:16px 0;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--gold);border-radius:10px;transition:width 0.4s ease}
+.quiz-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px;animation:fadeUp 0.3s ease}
+.quiz-q-num{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px}
+.quiz-question{font-family:var(--serif);font-size:1.5rem;color:var(--navy);line-height:1.4;margin-bottom:28px}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-option{padding:14px 18px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);font-size:14px;color:var(--slate);cursor:pointer;transition:all 0.2s;text-align:left;font-family:var(--sans);font-weight:500;line-height:1.5}
+.quiz-option:hover:not(.answered){border-color:var(--gold);background:var(--gold-light);color:var(--navy)}
+.quiz-option.correct{background:#ECFDF5;border-color:var(--green);color:#065F46}
+.quiz-option.wrong{background:#FEF2F2;border-color:var(--red);color:#991B1B}
+.quiz-option.reveal-correct{background:#ECFDF5;border-color:var(--green);color:#065F46}
+.quiz-feedback{margin-top:20px;padding:16px;border-radius:10px;font-size:14px;line-height:1.6;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:#ECFDF5;color:#065F46;border:1px solid #BBF7D0}
+.quiz-feedback.wrong{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+.quiz-next-btn{margin-top:20px;padding:12px 28px;background:var(--gold);border:none;border-radius:9px;font-size:14px;font-weight:600;color:var(--navy);cursor:pointer;display:none;transition:opacity 0.2s}
+.quiz-next-btn.show{display:inline-flex;align-items:center;gap:8px}
+.quiz-next-btn:hover{opacity:0.85}
+.quiz-results{text-align:center;padding:40px 20px;animation:fadeUp 0.3s ease}
+.quiz-score{font-family:var(--serif);font-size:4rem;font-weight:700;color:var(--gold)}
+.quiz-score-label{font-size:14px;color:var(--muted);margin-top:4px;margin-bottom:24px}
+.quiz-grade{font-family:var(--serif);font-size:1.4rem;color:var(--navy);margin-bottom:20px}
+.quiz-restart-btn{padding:12px 28px;background:var(--gold);border:none;border-radius:9px;font-size:14px;font-weight:600;color:var(--navy);cursor:pointer;transition:opacity 0.2s}
+.quiz-restart-btn:hover{opacity:0.85}
+.score-breakdown{display:flex;justify-content:center;gap:24px;margin:20px 0}
+.score-stat{text-align:center}
+.score-stat-num{font-size:1.6rem;font-weight:700}
+.score-stat-num.green{color:var(--green)}
+.score-stat-num.red{color:var(--red)}
+.score-stat-lbl{font-size:12px;color:var(--muted)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--white);border-radius:14px;padding:32px;max-width:560px;width:100%;box-shadow:var(--shadow-lg);transform:translateY(20px);transition:transform 0.25s}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;margin-top:-4px}
+.modal-eyebrow{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.modal-term{font-family:var(--serif);font-size:2rem;color:var(--navy);margin:16px 0 8px}
+.modal-meta{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.modal-divider{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:16px 0}
+.modal-def{font-family:var(--serif);font-size:1.1rem;color:var(--slate);line-height:1.7;margin-bottom:16px}
+.modal-eg{background:var(--light);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:8px}
+.modal-eg p{font-family:var(--serif);font-size:1rem;color:var(--slate);font-style:italic;line-height:1.6}
+
+/* ERROR */
+.error-card{background:var(--white);border-radius:var(--radius);border:1.5px solid var(--border);padding:40px;text-align:center}
+.error-card h3{font-family:var(--serif);font-size:1.4rem;color:var(--navy);margin-bottom:8px}
+.error-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.error-card code{background:var(--light);padding:2px 6px;border-radius:4px;font-size:12px;color:var(--slate)}
+
+@media(max-width:600px){
+  .term-name{font-size:2rem}
+  .term-card{padding:22px}
+  .archive-grid{grid-template-columns:1fr}
+  .stats-card{justify-content:center}
+  .quiz-card{padding:22px}
+  .search-box{width:100%}
+  .archive-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <a href="../index.html" class="back-btn">← Sameer Ghorsane</a>
+  <div class="header-brand">
+    <div class="header-name">Sameer Ghorsane</div>
+  </div>
+  <span class="tools-badge">Daily Word Lab</span>
+  <div class="ft-menu" id="ftMenu">
+    <div class="ft-badge" onclick="toggleFtMenu()">
+      ⚡ Finance Tools <span class="ft-badge-arrow">▼</span>
+    </div>
+    <div class="ft-dropdown">
+      <a href="../apps/rates.html" class="ft-item"><span class="ft-item-icon">📈</span> Live Rates</a>
+      <a href="../apps/digest.html" class="ft-item"><span class="ft-item-icon">📰</span> Markets Digest</a>
+      <span class="ft-item current"><span class="ft-item-icon">💡</span> Daily Word Lab</span>
+      <a href="../apps/nepali-calendar.html" class="ft-item"><span class="ft-item-icon">📅</span> Nepali Calendar</a>
+    </div>
+  </div>
+</header>
+
+<div class="main-container">
+
+  <!-- CATEGORY TABS -->
+  <div class="category-tabs" id="categoryTabs">
+    <button class="cat-tab active" data-cat="finance" onclick="switchCategory('finance')">
+      <span class="cat-icon">📊</span> Finance <span class="cat-badge">365</span>
+    </button>
+    <button class="cat-tab" data-cat="office" onclick="switchCategory('office')">
+      <span class="cat-icon">💼</span> Daily Office <span class="cat-badge">365</span>
+    </button>
+    <button class="cat-tab" data-cat="economy" onclick="switchCategory('economy')">
+      <span class="cat-icon">🌐</span> Economy <span class="cat-badge">365</span>
+    </button>
+    <button class="cat-tab placeholder" title="Coming soon">
+      <span class="cat-icon">📈</span> Markets <span class="cat-badge">Soon</span>
+    </button>
+    <button class="cat-tab placeholder" title="Coming soon">
+      <span class="cat-icon">⚖️</span> Legal <span class="cat-badge">Soon</span>
+    </button>
+  </div>
+
+  <!-- PAGE TITLE -->
+  <div class="page-title-row">
+    <div class="page-title" id="pageTitle">📊 Finance</div>
+    <div class="page-subtitle" id="pageSubtitle">365 terms · Rotates daily</div>
+  </div>
+
+  <!-- VIEW TABS -->
+  <div class="view-tabs">
+    <button class="view-tab active" onclick="switchView('today')">📖 Today</button>
+    <button class="view-tab" onclick="switchView('archive')">📚 Past Words</button>
+    <button class="view-tab" onclick="switchView('quiz')">🧠 Quiz</button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading word list…</div>
+  </div>
+
+  <!-- TODAY VIEW -->
+  <div id="view-today" style="display:none">
+    <div class="meta-row">
+      <span class="date-label" id="dateLabel"></span>
+      <span class="progress-pill" id="progressPill"></span>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">← Prev</button>
+      <div class="nav-center">
+        <button class="today-btn" onclick="goToToday()">⚡ Today</button>
+        <span class="nav-counter" id="navCounter"></span>
+      </div>
+      <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next →</button>
+    </div>
+    <div class="term-card" id="termCard">
+      <div class="term-eyebrow" id="termEyebrow"></div>
+      <div class="term-name" id="termName"></div>
+      <div class="term-meta">
+        <span class="pos-pill" id="termPos"></span>
+        <span class="cat-label" id="termCat"></span>
+      </div>
+      <hr class="divider">
+      <div class="def-label">Definition</div>
+      <div class="def-text" id="termDef"></div>
+      <div class="examples-label">In Practice</div>
+      <div class="example-block"><p id="termEx1"></p></div>
+      <div class="example-block"><p id="termEx2"></p></div>
+      <div class="card-actions">
+        <button class="action-btn" id="bookmarkBtn" onclick="toggleBookmark()">🔖 Save Word</button>
+        <button class="action-btn" onclick="shareWord()">🔗 Share</button>
+        <button class="action-btn" onclick="switchView('quiz')">🧠 Quiz Me</button>
+      </div>
+    </div>
+    <div class="stats-card">
+      <div class="stat-item"><div style="font-size:20px">🔥</div></div>
+      <div class="stat-item">
+        <div class="stat-num" id="statTotal">365</div>
+        <div class="stat-lbl">Total Words</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statSaved">0</div>
+        <div class="stat-lbl">Saved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statQuizzes">0</div>
+        <div class="stat-lbl">Quizzes Taken</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statBest">—</div>
+        <div class="stat-lbl">Best Score</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHIVE VIEW -->
+  <div id="view-archive" style="display:none">
+    <div class="archive-header">
+      <div class="archive-title">📚 Past Words</div>
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search terms…" oninput="filterArchive()">
+      </div>
+    </div>
+    <div class="filter-row" id="filterRow"></div>
+    <div class="archive-grid" id="archiveGrid"></div>
+  </div>
+
+  <!-- QUIZ VIEW -->
+  <div id="view-quiz" style="display:none">
+    <div class="quiz-header">
+      <div class="quiz-title">🧠 Daily Quiz</div>
+      <div class="quiz-sub">10 questions from the current word list. How many can you get right?</div>
+    </div>
+    <div id="quizBody"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="termModal" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-eyebrow" id="modalEyebrow"></div>
+    <div class="modal-term" id="modalTerm"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+    <hr class="modal-divider">
+    <div class="def-label">Definition</div>
+    <div class="modal-def" id="modalDef"></div>
+    <div class="examples-label">In Practice</div>
+    <div class="modal-eg"><p id="modalEx1"></p></div>
+    <div class="modal-eg"><p id="modalEx2"></p></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+const DATA_PATH = 'data/';
+const DAY_NUMBER = Math.floor(Date.now() / 86400000);
+
+const CATEGORY_CONFIG = {
+  finance: {
+    file: 'finance-terms.json',
+    label: 'Finance',
+    icon: '📊',
+    eyebrow: '💡 Finance Term of the Day',
+    subtitle: '365 finance & accounting terms · Rotates daily'
+  },
+  office: {
+    file: 'office-terms.json',
+    label: 'Daily Office',
+    icon: '💼',
+    eyebrow: '💼 Daily Office Word',
+    subtitle: '365 everyday workplace words · Rotates daily'
+  },
+  economy: {
+    file: 'economy-terms.json',
+    label: 'Economy',
+    icon: '🌐',
+    eyebrow: '🌐 Economy Term of the Day',
+    subtitle: '365 economics & markets terms · Rotates daily'
+  }
+};
+
+// ── STATE ───────────────────────────────────────────────────
+let allData = {};        // cat -> terms array (loaded on demand)
+let currentCat = 'finance';
+let currentView = 'today';
+let currentIndex = {};   // cat -> current index
+let bookmarks = JSON.parse(localStorage.getItem('wordlab_bookmarks') || '{}');
+let quizStats = JSON.parse(localStorage.getItem('wordlab_quiz_stats') || '{"total":0,"best":null}');
+let archiveFilter = 'All';
+let archiveSearch = '';
+let quizState = null;
+
+// ── DATA LOADING ────────────────────────────────────────────
+async function loadCategory(cat) {
+  if (allData[cat]) return allData[cat];
+  const url = DATA_PATH + CATEGORY_CONFIG[cat].file;
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Failed to load ${url}`);
+  allData[cat] = await resp.json();
+  // Set default index to today's term
+  currentIndex[cat] = DAY_NUMBER % allData[cat].length;
+  return allData[cat];
+}
+
+async function ensureLoaded(cat) {
+  document.getElementById('loadingScreen').style.display = 'flex';
+  hideAllViews();
+  try {
+    await loadCategory(cat);
+    document.getElementById('loadingScreen').style.display = 'none';
+  } catch(e) {
+    showError(cat, e.message);
+    return false;
+  }
+  return true;
+}
+
+function showError(cat, msg) {
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('view-today').style.display = 'block';
+  document.getElementById('termCard').innerHTML = `
+    <div class="error-card">
+      <h3>Could not load word list</h3>
+      <p>Make sure <code>${DATA_PATH}${CATEGORY_CONFIG[cat].file}</code> exists in the same folder as this HTML file.</p>
+      <p style="margin-top:8px;font-size:12px;color:#94A3B8">${msg}</p>
+    </div>`;
+}
+
+// ── CATEGORY SWITCHING ──────────────────────────────────────
+async function switchCategory(cat) {
+  currentCat = cat;
+  archiveFilter = 'All';
+  archiveSearch = '';
+  if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
+
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+
+  const cfg = CATEGORY_CONFIG[cat];
+  document.getElementById('pageTitle').textContent = cfg.icon + ' ' + cfg.label;
+  document.getElementById('pageSubtitle').textContent = cfg.subtitle;
+
+  const ok = await ensureLoaded(cat);
+  if (!ok) return;
+
+  if (currentView === 'today') renderTodayView();
+  else if (currentView === 'archive') renderArchive();
+  else if (currentView === 'quiz') { quizState = null; renderQuiz(); }
+}
+
+// ── VIEW SWITCHING ──────────────────────────────────────────
+function hideAllViews() {
+  ['today','archive','quiz'].forEach(v => {
+    document.getElementById('view-' + v).style.display = 'none';
+  });
+}
+
+async function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.view-tab').forEach((t, i) => {
+    t.classList.toggle('active', ['today','archive','quiz'][i] === view);
+  });
+  const ok = await ensureLoaded(currentCat);
+  if (!ok) return;
+  hideAllViews();
+  document.getElementById('view-' + view).style.display = 'block';
+  if (view === 'today') renderTodayView();
+  else if (view === 'archive') renderArchive();
+  else if (view === 'quiz') renderQuiz();
+}
+
+// ── TODAY VIEW ──────────────────────────────────────────────
+function renderTodayView() {
+  const terms = allData[currentCat];
+  const cfg = CATEGORY_CONFIG[currentCat];
+  const idx = currentIndex[currentCat];
+  const term = terms[idx];
+  const todayIdx = DAY_NUMBER % terms.length;
+
+  const now = new Date();
+  document.getElementById('dateLabel').textContent = now.toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('progressPill').textContent = `Word ${idx+1} of ${terms.length}`;
+  document.getElementById('navCounter').textContent = `${idx+1} / ${terms.length}`;
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === terms.length - 1;
+
+  document.getElementById('termEyebrow').textContent = cfg.eyebrow;
+  document.getElementById('termName').textContent = term.term;
+  document.getElementById('termPos').textContent = term.partOfSpeech;
+  document.getElementById('termCat').textContent = term.category;
+  document.getElementById('termDef').textContent = term.definition;
+  document.getElementById('termEx1').textContent = term.example1;
+  document.getElementById('termEx2').textContent = term.example2;
+
+  const key = `${currentCat}_${idx}`;
+  const bBtn = document.getElementById('bookmarkBtn');
+  bBtn.textContent = bookmarks[key] ? '🔖 Saved' : '🔖 Save Word';
+  bBtn.classList.toggle('bookmarked', !!bookmarks[key]);
+
+  document.getElementById('statTotal').textContent = terms.length;
+  document.getElementById('statSaved').textContent = Object.keys(bookmarks).length;
+  document.getElementById('statQuizzes').textContent = quizStats.total;
+  document.getElementById('statBest').textContent = quizStats.best !== null ? quizStats.best + '/10' : '—';
+
+  const card = document.getElementById('termCard');
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = 'fadeUp 0.3s ease';
+}
+
+function navigate(dir) {
+  const terms = allData[currentCat];
+  currentIndex[currentCat] = Math.max(0, Math.min(terms.length-1, currentIndex[currentCat]+dir));
+  renderTodayView();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goToToday() {
+  currentIndex[currentCat] = DAY_NUMBER % allData[currentCat].length;
+  renderTodayView();
+}
+
+function toggleBookmark() {
+  const idx = currentIndex[currentCat];
+  const key = `${currentCat}_${idx}`;
+  const term = allData[currentCat][idx];
+  if (bookmarks[key]) delete bookmarks[key];
+  else bookmarks[key] = {term: term.term, cat: currentCat, idx};
+  localStorage.setItem('wordlab_bookmarks', JSON.stringify(bookmarks));
+  renderTodayView();
+}
+
+function shareWord() {
+  const term = allData[currentCat][currentIndex[currentCat]];
+  const text = `Word of the Day: ${term.term}\n\n${term.definition}\n\n— Sameer Ghorsane · Daily Word Lab`;
+  if (navigator.share) navigator.share({title: term.term, text});
+  else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    alert('Copied to clipboard!');
+  }
+}
+
+// ── ARCHIVE VIEW ────────────────────────────────────────────
+function renderArchive() {
+  const terms = allData[currentCat];
+  const todayIdx = DAY_NUMBER % terms.length;
+  const shown = terms.slice(0, todayIdx+1);
+
+  const cats = ['All', ...new Set(shown.map(t => t.category))];
+  document.getElementById('filterRow').innerHTML = cats.map(c =>
+    `<button class="filter-chip ${c===archiveFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`
+  ).join('');
+
+  let filtered = shown.filter(t => archiveFilter==='All' || t.category===archiveFilter);
+  if (archiveSearch) {
+    const q = archiveSearch.toLowerCase();
+    filtered = filtered.filter(t => t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q));
+  }
+
+  const grid = document.getElementById('archiveGrid');
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="no-results">No words match your search.</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.slice().reverse().map(term => {
+    const origIdx = terms.indexOf(term);
+    const isToday = origIdx === todayIdx;
+    const key = `${currentCat}_${origIdx}`;
+    return `
+      <div class="archive-card${isToday?' is-today':''}" onclick="openModal(${origIdx})">
+        <div class="arc-term">${term.term}</div>
+        <div class="arc-pos">${term.partOfSpeech}</div>
+        <div class="arc-def">${term.definition}</div>
+        <div class="arc-cat">${term.category}</div>
+        ${bookmarks[key]?'<div class="arc-bookmark">🔖</div>':''}
+      </div>`;
+  }).join('');
+}
+
+function setFilter(cat) {
+  archiveFilter = cat;
+  renderArchive();
+}
+
+function filterArchive() {
+  archiveSearch = document.getElementById('searchInput').value;
+  renderArchive();
+}
+
+// ── MODAL ───────────────────────────────────────────────────
+function openModal(idx) {
+  const term = allData[currentCat][idx];
+  const cfg = CATEGORY_CONFIG[currentCat];
+  document.getElementById('modalEyebrow').textContent = cfg.eyebrow;
+  document.getElementById('modalTerm').textContent = term.term;
+  document.getElementById('modalMeta').innerHTML =
+    `<span class="pos-pill">${term.partOfSpeech}</span><span class="cat-label">${term.category}</span>`;
+  document.getElementById('modalDef').textContent = term.definition;
+  document.getElementById('modalEx1').textContent = term.example1;
+  document.getElementById('modalEx2').textContent = term.example2;
+  document.getElementById('termModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('termModal').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target===document.getElementById('termModal')) closeModal(); }
+
+// ── QUIZ VIEW ───────────────────────────────────────────────
+function renderQuiz() {
+  if (!quizState || quizState.cat !== currentCat) startNewQuiz();
+  else renderCurrentQuestion();
+}
+
+function startNewQuiz() {
+  const terms = allData[currentCat];
+  const todayIdx = DAY_NUMBER % terms.length;
+  const pool = terms.slice(0, Math.max(10, todayIdx+1));
+  const shuffled = [...pool].sort(() => Math.random()-0.5);
+  const questions = shuffled.slice(0, 10).map(term => {
+    const wrong = pool.filter(t => t.term !== term.term).sort(() => Math.random()-0.5).slice(0, 3);
+    const options = [...wrong, term].sort(() => Math.random()-0.5);
+    return {term, options};
+  });
+  quizState = {cat: currentCat, questions, current: 0, score: 0};
+  renderCurrentQuestion();
+}
+
+function renderCurrentQuestion() {
+  const {questions, current, score} = quizState;
+  const quizBody = document.getElementById('quizBody');
+
+  if (current >= questions.length) {
+    quizStats.total++;
+    if (quizStats.best===null || score>quizStats.best) quizStats.best = score;
+    localStorage.setItem('wordlab_quiz_stats', JSON.stringify(quizStats));
+    const pct = Math.round((score/questions.length)*100);
+    const grade = pct===100?'🏆 Perfect Score!':pct>=80?'🌟 Excellent!':pct>=60?'👍 Good Work':pct>=40?'📚 Keep Studying':'💪 Keep Practising';
+    quizBody.innerHTML = `
+      <div class="quiz-results">
+        <div class="quiz-score">${score}/${questions.length}</div>
+        <div class="quiz-score-label">You scored ${pct}%</div>
+        <div class="quiz-grade">${grade}</div>
+        <div class="score-breakdown">
+          <div class="score-stat"><div class="score-stat-num green">${score}</div><div class="score-stat-lbl">Correct</div></div>
+          <div class="score-stat"><div class="score-stat-num red">${questions.length-score}</div><div class="score-stat-lbl">Incorrect</div></div>
+        </div>
+        <button class="quiz-restart-btn" onclick="startNewQuiz()">🔄 Try Again</button>
+      </div>`;
+    return;
+  }
+
+  const q = questions[current];
+  const pct = (current/questions.length)*100;
+  quizBody.innerHTML = `
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+    <div class="quiz-card">
+      <div class="quiz-q-num">Question ${current+1} of ${questions.length} · Score: ${score}</div>
+      <div class="quiz-question">Which term matches this definition?<br><br><em style="color:var(--slate);font-size:1.1rem">"${q.term.definition}"</em></div>
+      <div class="quiz-options">
+        ${q.options.map((opt,i) =>
+          `<button class="quiz-option" onclick="answerQuestion(${i})" data-answer="${opt.term.replace(/"/g,'&quot;')}">${opt.term}</button>`
+        ).join('')}
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="quiz-next-btn" id="quizNextBtn" onclick="nextQuestion()">
+        ${current < questions.length-1 ? 'Next Question →' : 'See Results →'}
+      </button>
+    </div>`;
+}
+
+function answerQuestion(optionIdx) {
+  const opts = document.querySelectorAll('.quiz-option');
+  const q = quizState.questions[quizState.current];
+  const selected = opts[optionIdx].dataset.answer;
+  const isCorrect = selected === q.term.term;
+
+  opts.forEach(o => {
+    o.classList.add('answered');
+    o.onclick = null;
+    if (o.dataset.answer === q.term.term) o.classList.add(isCorrect&&o.dataset.answer===selected?'correct':'reveal-correct');
+    else if (o.dataset.answer === selected) o.classList.add('wrong');
+  });
+
+  if (isCorrect) quizState.score++;
+
+  const fb = document.getElementById('quizFeedback');
+  fb.className = `quiz-feedback show ${isCorrect?'correct':'wrong'}`;
+  fb.innerHTML = isCorrect
+    ? `✅ <strong>Correct!</strong> That's the definition of <em>${q.term.term}</em>.`
+    : `❌ <strong>Not quite.</strong> The answer was <strong>"${q.term.term}"</strong>. ${q.term.definition}`;
+
+  document.getElementById('quizNextBtn').classList.add('show');
+}
+
+function nextQuestion() {
+  quizState.current++;
+  renderCurrentQuestion();
+}
+
+// ── INIT ────────────────────────────────────────────────────
+(async () => {
+  const ok = await ensureLoaded('finance');
+  if (ok) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('view-today').style.display = 'block';
+    renderTodayView();
+  }
+})();
+
+function toggleFtMenu() {
+  document.getElementById('ftMenu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ftMenu')) {
+    document.getElementById('ftMenu')?.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

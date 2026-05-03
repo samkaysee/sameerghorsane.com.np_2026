@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nepali Calendar — Sameer Ghorsane</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #EABD23;
+    --gold-light: #FDF8E7;
+    --gold-mid: #F5E07A;
+    --navy: #0F172A;
+    --navy-mid: #1E293B;
+    --slate: #64748B;
+    --slate-light: #94A3B8;
+    --bg: #0F172A;
+    --white: #1E293B;
+    --card: #1E293B;
+    --red: #EF4444;
+    --red-light: #FEF2F2;
+    --border: #E2E8F0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: #E2E8F0;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .top-bar {
+    background: rgba(10,15,30,0.95);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(18px);
+  }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--gold); }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-initials {
+    width: 32px; height: 32px;
+    background: #1E293B;
+    color: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .finance-badge { display: none; }
+  .ft-menu { position: relative; }
+  .ft-badge {
+    background: rgba(234,189,35,0.12); border: 1px solid var(--gold);
+    color: #EABD23; font-size: 11px; font-weight: 600;
+    padding: 4px 12px 4px 10px; border-radius: 20px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 6px; transition: background 0.2s;
+  }
+  .ft-badge:hover { background: rgba(234,189,35,0.3); }
+  .ft-badge-arrow { font-size: 9px; transition: transform 0.2s; }
+  .ft-menu.open .ft-badge-arrow { transform: rotate(180deg); }
+  .ft-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: #1E293B; border: 1px solid rgba(234,189,35,0.2);
+    border-radius: 10px; padding: 6px; min-width: 200px; z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .ft-menu.open .ft-dropdown { display: block; }
+  .ft-item {
+    display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+    border-radius: 7px; text-decoration: none; color: #CBD5E1;
+    font-size: 13px; font-weight: 500; transition: all 0.15s;
+  }
+  .ft-item:hover { background: rgba(234,189,35,0.08); color: #EABD23; }
+  .ft-item.current { color: #EABD23; background: rgba(234,189,35,0.06); cursor: default; pointer-events: none; }
+  .ft-item-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #F1F5F9;
+  }
+  .page-subtitle {
+    color: #94A3B8;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  /* TODAY CARD */
+  .today-card {
+    background: #1E293B;
+    border-radius: 14px;
+    padding: 22px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .today-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--slate-light);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .today-bs-date {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: #F1F5F9;
+    line-height: 1.1;
+  }
+  .today-bs-month {
+    color: var(--gold);
+  }
+  .today-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.1);
+    grid-row: 1;
+    grid-column: unset;
+  }
+  .today-ad-date {
+    font-size: 16px;
+    color: var(--slate-light);
+    line-height: 1.5;
+  }
+  .today-ad-date strong {
+    color: #CBD5E1;
+    font-size: 20px;
+    display: block;
+    font-weight: 500;
+  }
+
+  /* SECTION CARD */
+  .card {
+    background: #1E293B;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #F1F5F9;
+  }
+  .card-body { padding: 20px 24px; }
+
+  /* VIEW TOGGLE */
+  .view-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .view-btn {
+    padding: 6px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #94A3B8;
+    transition: all 0.2s;
+  }
+  .view-btn.active {
+    background: #0F172A;
+    color: #E2E8F0;
+  }
+
+  /* CALENDAR NAVIGATION */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .cal-nav-btn {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #1E293B;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: #94A3B8;
+    transition: all 0.2s;
+  }
+  .cal-nav-btn:hover {
+    background: #0F172A;
+    color: #E2E8F0;
+    border-color: var(--navy);
+  }
+  .cal-month-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    min-width: 220px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .cal-month-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: #94A3B8;
+    font-weight: 400;
+    display: block;
+  }
+  .today-btn {
+    padding: 5px 12px;
+    background: var(--gold);
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #E2E8F0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .today-btn:hover { opacity: 0.85; }
+
+  /* CALENDAR GRID */
+  .cal-grid {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .cal-grid th {
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94A3B8;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .cal-grid td {
+    width: 14.28%;
+    height: 64px;
+    vertical-align: top;
+    padding: 6px 4px;
+    text-align: center;
+    border: 1px solid var(--border);
+    cursor: default;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .cal-grid td:hover:not(.empty) {
+    background: rgba(255,255,255,0.04);
+  }
+  .cal-grid td.today-cell {
+    background: rgba(234,189,35,0.12);
+    border-color: var(--gold);
+  }
+  .cal-grid td.today-cell .primary-day {
+    background: var(--gold);
+    color: #E2E8F0;
+    border-radius: 50%;
+    width: 28px; height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .cal-grid td.empty {
+    background: rgba(255,255,255,0.02);
+    cursor: default;
+  }
+  .cal-grid td.sat { color: #DC2626; }
+  .cal-grid th.sat { color: #DC2626; }
+
+  .primary-day {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    display: inline-block;
+  }
+  .secondary-day {
+    font-size: 10px;
+    color: var(--slate-light);
+    margin-top: 2px;
+    display: block;
+    line-height: 1.2;
+  }
+  .secondary-month-label {
+    font-size: 9px;
+    color: var(--gold);
+    font-weight: 600;
+    display: block;
+  }
+
+  /* CONVERTER SECTION */
+  .tab-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    padding: 8px 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #94A3B8;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    border-color: var(--gold);
+    background: #0F172A;
+    color: #E2E8F0;
+  }
+
+  .converter-form { display: none; }
+  .converter-form.active { display: block; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .field-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94A3B8;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field-group input,
+  .field-group select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #E2E8F0;
+    background: #1E293B;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .field-group input:focus,
+  .field-group select:focus {
+    border-color: var(--gold);
+  }
+  .convert-btn {
+    padding: 9px 22px;
+    background: #0F172A;
+    color: #E2E8F0;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .convert-btn:hover { opacity: 0.85; }
+
+  .result-box {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(234,189,35,0.12);
+    border: 1px solid var(--gold-mid);
+    border-radius: 10px;
+    font-size: 15px;
+    display: none;
+  }
+  .result-box strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .result-box .result-sub { font-size: 12px; color: #94A3B8; }
+
+  .error-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(239,68,68,0.12);
+    border: 1px solid #FECACA;
+    border-radius: 10px;
+    color: var(--red);
+    font-size: 13px;
+    display: none;
+  }
+
+  /* MONTH NAMES GRID */
+  .months-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .month-chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .month-num {
+    width: 24px; height: 24px;
+    background: #1E293B;
+    color: var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .month-name-np {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+  }
+  .month-name-en {
+    font-size: 10px;
+    color: #94A3B8;
+  }
+
+  /* INFO CARD */
+  .info-card {
+    background: #0F172A;
+    color: #E2E8F0;
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #CBD5E1;
+  }
+  .info-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: #E2E8F0;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .info-card strong { color: var(--gold); }
+
+  @media (max-width: 640px) {
+    .field-row { grid-template-columns: 1fr 1fr; }
+    .convert-btn { grid-column: 1 / -1; width: 100%; }
+    .months-grid { grid-template-columns: repeat(2, 1fr); }
+    .today-card { grid-template-columns: 1fr; }
+    .page-title { font-size: 28px; }
+    .cal-grid td { height: 52px; }
+    .primary-day { font-size: 14px; }
+    .secondary-day { font-size: 9px; }
+  }
+
+  /* NEPSE LINKS */
+  .nepse-link {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.03);
+    text-decoration: none; color: #E2E8F0; transition: all 0.2s;
+  }
+  .nepse-link:hover { border-color: rgba(234,189,35,0.35); background: rgba(234,189,35,0.06); }
+  .nepse-link-icon { font-size: 22px; flex-shrink: 0; }
+  .nepse-link-title { font-size: 14px; font-weight: 600; color: #EABD23; margin-bottom: 2px; }
+  .nepse-link-sub { font-size: 12px; color: #94A3B8; }
+  .nepse-link-arrow { margin-left: auto; color: #94A3B8; font-size: 16px; flex-shrink: 0; transition: transform 0.2s; }
+  .nepse-link:hover .nepse-link-arrow { transform: translateX(4px); color: #EABD23; }
+
+  .today-time-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--slate-light); margin-top: 12px; margin-bottom: 3px; font-weight: 600;
+  }
+  .today-time {
+    font-family: 'DM Sans', monospace; font-size: 22px; font-weight: 600;
+    color: var(--gold); letter-spacing: 0.03em;
+  }
+
+  /* ── DARK THEME OVERRIDES ── */
+  input, select, textarea {
+    background: #1E293B !important;
+    color: #E2E8F0 !important;
+    border-color: rgba(255,255,255,0.12) !important;
+  }
+  input::placeholder { color: #64748B !important; }
+  label { color: #CBD5E1 !important; }
+  .tab-btn { color: #94A3B8 !important; border-color: rgba(255,255,255,0.1) !important; background: rgba(255,255,255,0.04) !important; }
+  .tab-btn.active { color: var(--gold) !important; border-color: var(--gold) !important; background: rgba(234,189,35,0.12) !important; }
+  .view-btn { color: #94A3B8 !important; }
+  .view-btn.active { background: rgba(255,255,255,0.12) !important; color: #F1F5F9 !important; }
+  .cal-grid th { background: #1a2540 !important; color: #64748B !important; font-size: 11px; }
+  .cal-grid td { color: #CBD5E1 !important; }
+  .cal-grid td:hover { background: rgba(234,189,35,0.08) !important; }
+  .primary-day { color: #E2E8F0 !important; }
+  .secondary-day { color: #64748B !important; }
+  .cal-grid td.today .primary-day { color: #0F172A !important; }
+  .cal-month-label { color: #F1F5F9 !important; }
+  .cal-nav-btn { color: #94A3B8 !important; background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.1) !important; }
+  .cal-nav-btn:hover { color: var(--gold) !important; border-color: var(--gold) !important; }
+  .convert-btn { background: var(--gold) !important; color: #0F172A !important; font-weight: 700 !important; }
+  .result-box { background: rgba(234,189,35,0.08) !important; border-color: rgba(234,189,35,0.25) !important; color: #F1F5F9 !important; }
+  .error-box { background: rgba(239,68,68,0.1) !important; color: #FCA5A5 !important; }
+  .nav-btn { color: #94A3B8 !important; border-color: rgba(255,255,255,0.1) !important; background: rgba(255,255,255,0.04) !important; }
+  .month-chip { background: #1E293B !important; border-color: rgba(255,255,255,0.07) !important; }
+  .month-name-np { color: #EABD23 !important; }
+  .month-name-en { color: #94A3B8 !important; }
+  .month-num { color: #64748B !important; }
+  .page-title { color: #F1F5F9 !important; }
+  .page-subtitle { color: #94A3B8 !important; }
+  .card-title { color: #F1F5F9 !important; }
+  .today-btn { background: var(--gold) !important; color: #0F172A !important; }
+  .field-group label { color: #94A3B8 !important; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a href="../index.html" class="back-link">
+    <span>←</span> Sameer Ghorsane
+  </a>
+  <div class="logo-area">
+    <div class="ft-menu" id="ftMenu">
+      <div class="ft-badge" onclick="toggleFtMenu()">
+        ⚡ Finance Tools <span class="ft-badge-arrow">▼</span>
+      </div>
+      <div class="ft-dropdown">
+        <a href="rates.html" class="ft-item"><span class="ft-item-icon">📈</span> Live Rates</a>
+        <a href="digest.html" class="ft-item"><span class="ft-item-icon">📰</span> Markets Digest</a>
+        <a href="daily-word-lab.html" class="ft-item"><span class="ft-item-icon">💡</span> Daily Word Lab</a>
+        <span class="ft-item current"><span class="ft-item-icon">📅</span> Nepali Calendar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <h1 class="page-title">Nepali Calendar</h1>
+  <p class="page-subtitle">Bikram Sambat (BS) · Gregorian (AD) — dual calendar with date converter</p>
+
+  <!-- TODAY CARD -->
+  <div class="today-card">
+    <div>
+      <div class="today-label">Today — Bikram Sambat</div>
+      <div class="today-bs-date" id="todayBS">—</div>
+      <div class="today-time-label">🕐 KTM Time</div>
+      <div class="today-time" id="clockKTM">—</div>
+    </div>
+    <div>
+      <div class="today-label">Today — Gregorian</div>
+      <div class="today-ad-date" id="todayAD">—</div>
+      <div class="today-time-label">🕐 UAE Time</div>
+      <div class="today-time" id="clockUAE">—</div>
+    </div>
+  </div>
+
+  <!-- CONVERTER -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Date Converter</span>
+    </div>
+    <div class="card-body">
+      <div class="tab-row">
+        <button class="tab-btn active" id="tabAD" onclick="switchTab('AD')">AD → BS</button>
+        <button class="tab-btn" id="tabBS" onclick="switchTab('BS')">BS → AD</button>
+      </div>
+
+      <!-- AD to BS -->
+      <div class="converter-form active" id="formAD">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Year (AD)</label>
+            <input type="number" id="adYear" min="1932" max="2033" placeholder="e.g. 2025">
+          </div>
+          <div class="field-group">
+            <label>Month</label>
+            <select id="adMonth">
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Day</label>
+            <input type="number" id="adDay" min="1" max="31" placeholder="e.g. 15">
+          </div>
+          <button class="convert-btn" onclick="convertADtoBS()">Convert</button>
+        </div>
+        <div class="result-box" id="resultAD"></div>
+        <div class="error-box" id="errorAD"></div>
+      </div>
+
+      <!-- BS to AD -->
+      <div class="converter-form" id="formBS">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Year (BS)</label>
+            <input type="number" id="bsYear" min="1989" max="2090" placeholder="e.g. 2082">
+          </div>
+          <div class="field-group">
+            <label>Month</label>
+            <select id="bsMonth">
+              <option value="1">Baisakh</option><option value="2">Jestha</option>
+              <option value="3">Ashadh</option><option value="4">Shrawan</option>
+              <option value="5">Bhadra</option><option value="6">Ashwin</option>
+              <option value="7">Kartik</option><option value="8">Mangsir</option>
+              <option value="9">Poush</option><option value="10">Magh</option>
+              <option value="11">Falgun</option><option value="12">Chaitra</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Day</label>
+            <input type="number" id="bsDay" min="1" max="32" placeholder="e.g. 15">
+          </div>
+          <button class="convert-btn" onclick="convertBStoAD()">Convert</button>
+        </div>
+        <div class="result-box" id="resultBS"></div>
+        <div class="error-box" id="errorBS"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="card">
+    <div class="card-header">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="prevBtn">&#8592;</button>
+        <div class="cal-month-label" id="monthLabel">—</div>
+        <button class="cal-nav-btn" id="nextBtn">&#8594;</button>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="today-btn" id="gotoToday">Today</button>
+        <div class="view-toggle">
+          <button class="view-btn active" id="viewAD" onclick="setView('AD')">AD Month</button>
+          <button class="view-btn" id="viewBS" onclick="setView('BS')">BS Month</button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body" style="padding:16px;">
+      <table class="cal-grid" id="calGrid">
+        <thead>
+          <tr>
+            <th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th class="sat">Sat</th>
+          </tr>
+        </thead>
+        <tbody id="calBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MONTH NAMES -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">BS Month Names</span></div>
+    <div class="card-body">
+      <div class="months-grid" id="monthsGrid"></div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-card">
+    <h3>About Bikram Sambat</h3>
+    The Bikram Sambat calendar is Nepal's official calendar, named after the legendary king Vikramaditya. It runs approximately <strong>56 years and 8.5 months ahead</strong> of the Gregorian calendar. The BS year begins with <strong>Baisakh</strong> (mid-April) and has 12 months ranging from 29 to 32 days. Saturday is the official day off in Nepal.
+  </div>
+</div>
+
+<script>
+// ─── BS DATA (1989–2090) ───────────────────────────────────────────────────
+const bsData = {
+  1989:[30,31,32,31,31,31,30,29,30,29,30,30],
+  1990:[31,31,32,31,32,30,30,29,30,29,30,30],
+  1991:[31,32,31,32,31,30,30,29,30,29,30,30],
+  1992:[31,32,31,32,31,30,30,30,29,29,30,31],
+  1993:[30,32,31,32,31,30,30,30,29,30,29,31],
+  1994:[31,31,32,31,31,31,30,29,30,29,30,30],
+  1995:[31,31,32,31,32,30,30,29,30,29,30,30],
+  1996:[31,32,31,32,31,30,30,29,30,29,30,30],
+  1997:[31,32,31,32,31,30,30,30,29,29,30,31],
+  1998:[30,32,31,32,31,31,29,30,30,29,29,31],
+  1999:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2000:[30,31,32,31,32,30,30,29,30,29,30,30],
+  2001:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2002:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2003:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2004:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2005:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2006:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2007:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2008:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2009:[30,32,31,32,31,31,29,30,29,30,29,31],
+  2010:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2011:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2012:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2013:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2014:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2015:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2016:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2017:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2018:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2019:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2020:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2021:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2022:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2023:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2024:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2025:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2026:[30,32,31,32,31,31,29,30,29,30,29,31],
+  2027:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2028:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2029:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2030:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2031:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2032:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2033:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2034:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2035:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2036:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2037:[30,32,31,32,31,31,29,30,29,30,29,31],
+  2038:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2039:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2040:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2041:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2042:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2043:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2044:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2045:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2046:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2047:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2048:[30,32,31,32,31,31,29,30,29,30,29,31],
+  2049:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2050:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2051:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2052:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2053:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2054:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2055:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2056:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2057:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2058:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2059:[30,32,31,32,31,31,29,30,30,29,29,31],
+  2060:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2061:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2062:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2063:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2064:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2065:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2066:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2067:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2068:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2069:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2070:[30,32,31,32,31,31,29,30,29,30,29,31],
+  2071:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2072:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2073:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2074:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2075:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2076:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2077:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2078:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2079:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2080:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2081:[31,31,32,31,31,31,29,30,30,29,29,31],
+  2082:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2083:[31,31,32,31,32,30,30,29,30,29,30,30],
+  2084:[31,32,31,32,31,30,30,29,30,29,30,30],
+  2085:[31,32,31,32,31,30,30,30,29,29,30,31],
+  2086:[30,32,31,32,31,30,30,30,29,30,29,31],
+  2087:[31,31,32,31,31,30,30,30,29,30,29,31],
+  2088:[31,31,32,31,31,31,30,29,30,29,30,30],
+  2089:[31,31,32,32,31,30,30,29,30,29,30,30],
+  2090:[31,32,31,32,31,30,30,29,30,29,30,30]
+};
+
+const BS_MONTHS = ['Baisakh','Jestha','Ashadh','Shrawan','Bhadra','Ashwin','Kartik','Mangsir','Poush','Magh','Falgun','Chaitra'];
+const AD_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Anchor: BS 2081 Baisakh 1 = AD 2024 April 13
+const ANCHOR_BS = { y:2081, m:1, d:1 };
+const ANCHOR_AD = new Date(2024, 3, 13); // April 13 2024
+
+function bsToAdDate(bsY, bsM, bsD) {
+  // Count days from anchor BS to target BS date
+  let cy = ANCHOR_BS.y, cm = ANCHOR_BS.m, cd = ANCHOR_BS.d;
+  let days = 0;
+
+  // Check if target is same as anchor
+  if (bsY === cy && bsM === cm && bsD === cd) {
+    return new Date(ANCHOR_AD);
+  }
+
+  // Is target after anchor?
+  const targetAfter = bsY > cy || (bsY === cy && bsM > cm) || (bsY === cy && bsM === cm && bsD > cd);
+
+  if (targetAfter) {
+    while (!(cy === bsY && cm === bsM && cd === bsD)) {
+      if (cd < bsData[cy][cm-1]) { cd++; }
+      else if (cm < 12) { cm++; cd = 1; }
+      else { cy++; cm = 1; cd = 1; }
+      days++;
+    }
+    const result = new Date(ANCHOR_AD);
+    result.setDate(result.getDate() + days);
+    return result;
+  } else {
+    while (!(cy === bsY && cm === bsM && cd === bsD)) {
+      if (cd > 1) { cd--; }
+      else {
+        if (cm > 1) { cm--; }
+        else { cy--; cm = 12; }
+        cd = bsData[cy][cm-1];
+      }
+      days++;
+    }
+    const result = new Date(ANCHOR_AD);
+    result.setDate(result.getDate() - days);
+    return result;
+  }
+}
+
+function adToBs(adDate) {
+  const anchor = new Date(ANCHOR_AD);
+  anchor.setHours(0,0,0,0);
+  const target = new Date(adDate);
+  target.setHours(0,0,0,0);
+  const diffMs = target - anchor;
+  let days = Math.round(diffMs / 86400000);
+
+  let cy = ANCHOR_BS.y, cm = ANCHOR_BS.m, cd = ANCHOR_BS.d;
+
+  if (days > 0) {
+    // Move forward: increment then subtract
+    while (days > 0) {
+      const maxD = bsData[cy]?.[cm-1];
+      if (!maxD) return null;
+      if (cd < maxD) { cd++; }
+      else if (cm < 12) { cm++; cd = 1; }
+      else { cy++; cm = 1; cd = 1; }
+      days--;
+    }
+  } else if (days < 0) {
+    // Move backward: decrement then subtract
+    days = -days;
+    while (days > 0) {
+      if (cd > 1) {
+        cd--;
+      } else {
+        if (cm > 1) { cm--; }
+        else { cy--; cm = 12; }
+        if (!bsData[cy]) return null;
+        cd = bsData[cy][cm-1];
+      }
+      days--;
+    }
+  }
+  return { y: cy, m: cm, d: cd };
+}
+
+// ─── CALENDAR STATE ──────────────────────────────────────────────────────────
+let viewMode = 'AD'; // 'AD' or 'BS'
+let calADYear, calADMonth; // for AD view: JS month 0-based
+let calBSYear, calBSMonth; // for BS view
+
+const today = new Date();
+today.setHours(0,0,0,0);
+const todayBS = adToBs(today);
+
+function init() {
+  calADYear = today.getFullYear();
+  calADMonth = today.getMonth();
+  const bs = adToBs(today);
+  calBSYear = bs.y; calBSMonth = bs.m;
+  renderTodayCard();
+  renderCalendar();
+  renderMonthsGrid();
+  prefillConverter();
+}
+
+function renderTodayCard() {
+  const bs = todayBS;
+  document.getElementById('todayBS').innerHTML =
+    `${bs.d} <span class="today-bs-month">${BS_MONTHS[bs.m-1]}</span> ${bs.y}`;
+  document.getElementById('todayAD').innerHTML =
+    `<strong>${today.getDate()} ${AD_MONTHS[today.getMonth()]} ${today.getFullYear()}</strong>` +
+    ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][today.getDay()];
+}
+
+function setView(v) {
+  viewMode = v;
+  document.getElementById('viewAD').classList.toggle('active', v === 'AD');
+  document.getElementById('viewBS').classList.toggle('active', v === 'BS');
+  renderCalendar();
+}
+
+function renderCalendar() {
+  if (viewMode === 'AD') renderADCalendar();
+  else renderBSCalendar();
+}
+
+function renderADCalendar() {
+  const y = calADYear, m = calADMonth;
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+
+  // Label
+  const bsOfFirst = adToBs(new Date(y, m, 1));
+  const bsOfLast  = adToBs(new Date(y, m, daysInMonth));
+  let bsLabel = '';
+  if (bsOfFirst && bsOfLast) {
+    if (bsOfFirst.m === bsOfLast.m)
+      bsLabel = `${BS_MONTHS[bsOfFirst.m-1]} ${bsOfFirst.y}`;
+    else
+      bsLabel = `${BS_MONTHS[bsOfFirst.m-1]}–${BS_MONTHS[bsOfLast.m-1]} ${bsOfFirst.y}`;
+  }
+  document.getElementById('monthLabel').innerHTML =
+    `${AD_MONTHS[m]} ${y}<span class="cal-month-sub">${bsLabel}</span>`;
+
+  const rows = [];
+  let cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push('<td class="empty"></td>');
+  for (let d = 1; d <= daysInMonth; d++) {
+    const adDate = new Date(y, m, d);
+    const bs = adToBs(adDate);
+    const isToday = adDate.getTime() === today.getTime();
+    const isSat = adDate.getDay() === 6;
+    let cls = '';
+    if (isToday) cls += ' today-cell';
+    if (isSat) cls += ' sat';
+    let bsStr = '';
+    if (bs) {
+      const showMonthLabel = bs.d === 1 || d === 1;
+      bsStr = `<span class="secondary-day">${showMonthLabel ? `<span class="secondary-month-label">${BS_MONTHS[bs.m-1]}</span>` : ''}${bs.d}</span>`;
+    }
+    cells.push(`<td class="${cls.trim()}"><span class="primary-day">${d}</span>${bsStr}</td>`);
+    if (cells.length === 7) { rows.push('<tr>' + cells.join('') + '</tr>'); cells = []; }
+  }
+  while (cells.length > 0 && cells.length < 7) cells.push('<td class="empty"></td>');
+  if (cells.length) rows.push('<tr>' + cells.join('') + '</tr>');
+  document.getElementById('calBody').innerHTML = rows.join('');
+}
+
+function renderBSCalendar() {
+  const y = calBSYear, m = calBSMonth;
+  if (!bsData[y]) return;
+  const daysInMonth = bsData[y][m-1];
+  const firstAD = bsToAdDate(y, m, 1);
+  const firstDay = firstAD.getDay();
+
+  // Corresponding AD range
+  const lastAD = bsToAdDate(y, m, daysInMonth);
+  const adLabel = firstAD.getMonth() === lastAD.getMonth()
+    ? `${AD_MONTHS[firstAD.getMonth()]} ${firstAD.getFullYear()}`
+    : `${AD_MONTHS[firstAD.getMonth()]}–${AD_MONTHS[lastAD.getMonth()]} ${firstAD.getFullYear()}`;
+
+  document.getElementById('monthLabel').innerHTML =
+    `${BS_MONTHS[m-1]} ${y}<span class="cal-month-sub">${adLabel}</span>`;
+
+  const rows = [];
+  let cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push('<td class="empty"></td>');
+  for (let d = 1; d <= daysInMonth; d++) {
+    const adDate = bsToAdDate(y, m, d);
+    const isToday = adDate.getTime() === today.getTime();
+    const isSat = adDate.getDay() === 6;
+    let cls = '';
+    if (isToday) cls += ' today-cell';
+    if (isSat) cls += ' sat';
+    const showMonthLabel = d === 1 || adDate.getDate() === 1;
+    const adStr = `<span class="secondary-day">${showMonthLabel ? `<span class="secondary-month-label">${AD_MONTHS[adDate.getMonth()]}</span>` : ''}${adDate.getDate()}</span>`;
+    cells.push(`<td class="${cls.trim()}"><span class="primary-day">${d}</span>${adStr}</td>`);
+    if (cells.length === 7) { rows.push('<tr>' + cells.join('') + '</tr>'); cells = []; }
+  }
+  while (cells.length > 0 && cells.length < 7) cells.push('<td class="empty"></td>');
+  if (cells.length) rows.push('<tr>' + cells.join('') + '</tr>');
+  document.getElementById('calBody').innerHTML = rows.join('');
+}
+
+// Navigation
+document.getElementById('prevBtn').onclick = () => {
+  if (viewMode === 'AD') {
+    calADMonth--; if (calADMonth < 0) { calADMonth = 11; calADYear--; }
+  } else {
+    calBSMonth--; if (calBSMonth < 1) { calBSMonth = 12; calBSYear--; }
+  }
+  renderCalendar();
+};
+document.getElementById('nextBtn').onclick = () => {
+  if (viewMode === 'AD') {
+    calADMonth++; if (calADMonth > 11) { calADMonth = 0; calADYear++; }
+  } else {
+    calBSMonth++; if (calBSMonth > 12) { calBSMonth = 1; calBSYear++; }
+  }
+  renderCalendar();
+};
+document.getElementById('gotoToday').onclick = () => {
+  calADYear = today.getFullYear(); calADMonth = today.getMonth();
+  calBSYear = todayBS.y; calBSMonth = todayBS.m;
+  renderCalendar();
+};
+
+// ─── CONVERTER ───────────────────────────────────────────────────────────────
+function switchTab(t) {
+  document.getElementById('tabAD').classList.toggle('active', t === 'AD');
+  document.getElementById('tabBS').classList.toggle('active', t === 'BS');
+  document.getElementById('formAD').classList.toggle('active', t === 'AD');
+  document.getElementById('formBS').classList.toggle('active', t === 'BS');
+}
+
+function prefillConverter() {
+  document.getElementById('adYear').value = today.getFullYear();
+  document.getElementById('adMonth').value = today.getMonth() + 1;
+  document.getElementById('adDay').value = today.getDate();
+}
+
+function convertADtoBS() {
+  const y = parseInt(document.getElementById('adYear').value);
+  const m = parseInt(document.getElementById('adMonth').value);
+  const d = parseInt(document.getElementById('adDay').value);
+  const res = document.getElementById('resultAD');
+  const err = document.getElementById('errorAD');
+  res.style.display = 'none'; err.style.display = 'none';
+
+  if (!y || !m || !d) { err.textContent = 'Please fill all fields.'; err.style.display = 'block'; return; }
+  const adDate = new Date(y, m-1, d);
+  if (adDate.getFullYear() !== y || adDate.getMonth() !== m-1 || adDate.getDate() !== d) {
+    err.textContent = 'Invalid date.'; err.style.display = 'block'; return;
+  }
+  const bs = adToBs(adDate);
+  if (!bs) { err.textContent = 'Date is outside supported range (AD 1932–2033).'; err.style.display = 'block'; return; }
+  res.innerHTML = `<strong>${bs.d} ${BS_MONTHS[bs.m-1]} ${bs.y} BS</strong><span class="result-sub">${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][adDate.getDay()]}</span>`;
+  res.style.display = 'block';
+}
+
+function convertBStoAD() {
+  const y = parseInt(document.getElementById('bsYear').value);
+  const m = parseInt(document.getElementById('bsMonth').value);
+  const d = parseInt(document.getElementById('bsDay').value);
+  const res = document.getElementById('resultBS');
+  const err = document.getElementById('errorBS');
+  res.style.display = 'none'; err.style.display = 'none';
+
+  if (!y || !m || !d) { err.textContent = 'Please fill all fields.'; err.style.display = 'block'; return; }
+  if (!bsData[y]) { err.textContent = `BS year ${y} is outside supported range (1989–2090).`; err.style.display = 'block'; return; }
+  const maxD = bsData[y][m-1];
+  if (d < 1 || d > maxD) { err.textContent = `${BS_MONTHS[m-1]} ${y} has only ${maxD} days.`; err.style.display = 'block'; return; }
+  const adDate = bsToAdDate(y, m, d);
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  res.innerHTML = `<strong>${adDate.getDate()} ${AD_MONTHS[adDate.getMonth()]} ${adDate.getFullYear()} AD</strong><span class="result-sub">${days[adDate.getDay()]}</span>`;
+  res.style.display = 'block';
+}
+
+// ─── MONTHS GRID ─────────────────────────────────────────────────────────────
+function renderMonthsGrid() {
+  const currentBSYear = todayBS ? todayBS.y : ANCHOR_BS.y;
+  const shortMonth = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const g = document.getElementById('monthsGrid');
+  g.innerHTML = BS_MONTHS.map((name, i) => {
+    let dateRange = '';
+    try {
+      const days = bsData[currentBSYear];
+      if (days) {
+        const startAD = bsToAdDate(currentBSYear, i+1, 1);
+        const endAD   = bsToAdDate(currentBSYear, i+1, days[i]);
+        const startStr = `${startAD.getDate()} ${shortMonth[startAD.getMonth()]}`;
+        const endStr   = `${endAD.getDate()} ${shortMonth[endAD.getMonth()]} ${endAD.getFullYear()}`;
+        dateRange = `${startStr} – ${endStr}`;
+      }
+    } catch(e) { dateRange = ''; }
+    return `<div class="month-chip"><div class="month-num">${i+1}</div><div><div class="month-name-np">${name}</div><div class="month-name-en">${dateRange}</div></div></div>`;
+  }).join('');
+}
+
+
+// ─── LIVE CLOCKS ─────────────────────────────────────────────────────────────
+function updateClocks() {
+  const now = new Date();
+  // KTM is UTC+5:45
+  const ktm = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kathmandu' }));
+  // UAE is UTC+4
+  const uae = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
+
+  function fmt(d) {
+    const h = d.getHours();
+    const m = String(d.getMinutes()).padStart(2,'0');
+    const s = String(d.getSeconds()).padStart(2,'0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return `${h12}:${m}:${s} ${ampm}`;
+  }
+
+  const ktmEl = document.getElementById('clockKTM');
+  const uaeEl = document.getElementById('clockUAE');
+  if (ktmEl) ktmEl.textContent = fmt(ktm);
+  if (uaeEl) uaeEl.textContent = fmt(uae);
+}
+updateClocks();
+setInterval(updateClocks, 1000);
+
+init();
+
+function toggleFtMenu() {
+  document.getElementById('ftMenu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#ftMenu')) {
+    document.getElementById('ftMenu')?.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
