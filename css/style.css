@@ -1581,7 +1581,7 @@ em { font-style: italic; color: var(--gold-dark); }
 /* Scrolled state: slim tab hugging right edge */
 .apps-widget.is-fixed {
   top: var(--nav-h);
-  right: 0;
+  right: 2;
 }
 
 /* ── BUTTON ── */
@@ -1671,14 +1671,14 @@ em { font-style: italic; color: var(--gold-dark); }
   background: var(--white);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 16px;
+  padding: 2px;
   box-shadow: var(--shadow-lg);
-  width: 272px;
+  width: 240px;
   opacity: 0;
   transform: translateY(6px) scale(0.97);
   pointer-events: none;
   transition: opacity 0.22s ease, transform 0.22s ease;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 .apps-widget__panel.open {
   opacity: 1;
@@ -1706,7 +1706,7 @@ em { font-style: italic; color: var(--gold-dark); }
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
@@ -1715,10 +1715,10 @@ em { font-style: italic; color: var(--gold-dark); }
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
+  padding: 3px;
   border-radius: 10px;
   border: 1px solid transparent;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   transition: all var(--transition);
   text-decoration: none;
   color: var(--heading);
@@ -1752,7 +1752,7 @@ em { font-style: italic; color: var(--gold-dark); }
   margin-bottom: 1px;
 }
 .apps-widget__item-text span {
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   color: var(--muted);
 }
 

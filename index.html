@@ -34,7 +34,7 @@
   <nav class="nav" id="navbar">
     <div class="nav__container">
       <a href="#hero" class="nav__logo">
-        <!-- <span class="nav__logo-initials">SG</span> -->
+        <span class="nav__logo-initials">SG</span>
         <span class="nav__logo-divider"></span>
         <!-- <span class="nav__logo-text">Sameer Ghorsane</span> -->
       </a>
@@ -161,7 +161,7 @@
         <span class="apps-widget__btn-label">Tools</span>
       </button>
       <div class="apps-widget__panel" id="appsPanel">
-        <p class="apps-widget__panel-title">Finance Tools</p>
+        <p class="apps-widget__panel-title">Tools</p>
         <a href="apps/rates.html" class="apps-widget__item">
           <div class="apps-widget__item-icon">📈</div>
           <div class="apps-widget__item-text"><strong>Live Rates</strong><span>Gold · AED · USD · NPR</span></div>
@@ -169,12 +169,12 @@
         </a>
         <a href="apps/digest.html" class="apps-widget__item">
           <div class="apps-widget__item-icon">📰</div>
-          <div class="apps-widget__item-text"><strong>Markets Digest</strong><span>Today's finance headlines</span></div>
+          <div class="apps-widget__item-text"><strong>Markets Digest</strong><span>News Highlights</span></div>
           <i class="fa-solid fa-chevron-right apps-widget__item-arrow"></i>
         </a>
         <a href="apps/daily-word-lab.html" class="apps-widget__item">
           <div class="apps-widget__item-icon">💡</div>
-          <div class="apps-widget__item-text"><strong>Daily Word Lab</strong><span>Finance · Office · Economy</span></div>
+          <div class="apps-widget__item-text"><strong>Daily Word Lab</strong><span>Finance · Economy · Office</span></div>
           <i class="fa-solid fa-chevron-right apps-widget__item-arrow"></i>
         </a>
         <a href="apps/nepali-calendar.html" class="apps-widget__item">
@@ -759,7 +759,7 @@
             <div class="contact-item__icon contact-item__icon--gold"><i class="fa-solid fa-envelope"></i></div>
             <div>
               <p class="contact-item__label">Email</p>
-              <a href="mailto:sameer@sameerghorsane.com.np" class="contact-item__value">sameer@sameerghorsane.com.np</a>
+              <a href="mailto:sameerghorsane@gmail.com" class="contact-item__value">sameerghorsane@gmail.com</a>
             </div>
           </div>
 
@@ -792,33 +792,41 @@
 
         <!-- Contact Form -->
         <div class="contact__form-wrap" data-animate="fade-left">
-          <div class="contact__form-card" id="commentForm">
+          
+          <form
+            class="contact__form-card"
+            action="https://formsubmit.co/sameerghorsane@gmail.com"
+            method="POST"
+          >
+          <input type="hidden" name="_subject" value="New message from sameerghorsane.com.np">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">          
+          <input type="hidden" name="_next" value="https://sameerghorsane.com.np/?sent=1#contact">
+          <input type="text" name="_honey" style="display:none">
             <h3 class="contact__form-title">Send a Message or Request</h3>
             <!-- <p class="contact__form-sub">I will respond within one business day.</p> -->
 
             <div class="form-group">
               <label for="cf-name">Full Name <span class="req">*</span></label>
-              <input type="text" id="cf-name" placeholder="Your name" autocomplete="name" />
+              <input type="text" id="cf-name" name="name" placeholder="Your name" required>
             </div>
             <div class="form-group">
               <label for="cf-email">Email Address <span class="req">*</span></label>
-              <input type="email" id="cf-email" placeholder="your@email.com" autocomplete="email" />
+              <input type="email" id="cf-email" name="email" placeholder="your@email.com" required>
             </div>
             <div class="form-group">
               <label for="cf-phone">Phone / WhatsApp</label>
-              <input type="tel" id="cf-phone" placeholder="+971 xx xxx xxxx" autocomplete="tel" />
+              <input type="tel" id="cf-phone" name="phone">
             </div>
             <div class="form-group">
               <label for="cf-msg">Message / Request <span class="req">*</span></label>
-              <textarea id="cf-msg" rows="4" placeholder="How can I help you?"></textarea>
-            </div>
-
-            <button type="button" class="btn btn--gold btn--full" id="submitComment">
+              <textarea id="cf-msg" name="message" rows="4" required></textarea>            </div>
+            <button type="submit" class="btn btn--gold btn--full">
               <i class="fa-solid fa-paper-plane"></i> Send Message
             </button>
 
             <div class="form-notice" id="formNotice" style="display:none"></div>
-          </div>
+          </form>
         </div>
 
       </div>
@@ -879,7 +887,7 @@
         <div class="footer__connect">
           <h4>Connect</h4>
           <ul>
-            <li><a href="mailto:sameer@sameerghorsane.com.np"><i class="fa-solid fa-envelope"></i> sameer@sameerghorsane.com.np</a></li>
+            <li><a href="mailto:sameerghorsane@gmail.com"><i class="fa-solid fa-envelope"></i> sameerghorsane@gmail.com</a></li>
             <li><a href="https://wa.me/971506267012" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> +971 50 626 7012 (UAE)</a></li>
             <li><a href="https://wa.me/9779813853615" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> +977 981 385 3615 (NP)</a></li>
             <li><a href="https://www.linkedin.com/in/sameer-g-7290269a/" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i> LinkedIn</a></li>
@@ -919,6 +927,6 @@
   </button>
 
   <script src="js/main.js"></script>
-  <script src="js/form.js"></script>
+  <!-- <script src="js/form.js"></script> -->
 </body>
 </html>
