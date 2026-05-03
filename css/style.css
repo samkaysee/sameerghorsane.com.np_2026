@@ -1624,14 +1624,29 @@ em { font-style: italic; color: var(--gold-dark); }
   border-color: rgba(234,189,35,0.5);
 }
 
-/* Hide label in fixed/scrolled state — icon only */
+/* Keep label visible in fixed/scrolled state — Tools label always visible */
 .apps-widget.is-fixed .apps-widget__btn-label {
-  display: none;
+  display: inline;
 }
 
 .apps-widget__btn-icon {
   font-size: 1.1rem;
   line-height: 1;
+}
+
+/* Chevron-down hint: only visible in hero mode (signals "click to scroll down") */
+.apps-widget__btn-hint {
+  font-size: 0.7rem;
+  margin-left: 4px;
+  opacity: 0.7;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.apps-widget__btn:hover .apps-widget__btn-hint {
+  transform: translateY(2px);
+  opacity: 1;
+}
+.apps-widget.is-fixed .apps-widget__btn-hint {
+  display: none;
 }
 
 /* ── TOOLTIP ── */

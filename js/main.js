@@ -144,6 +144,11 @@ const appsWidget    = document.getElementById('appsWidget');
 const appsWidgetBtn = document.getElementById('appsWidgetBtn');
 const appsPanel     = document.getElementById('appsPanel');
 const heroSection   = document.getElementById('hero');
+const aboutSection  = document.getElementById('about');
+
+function isWidgetSticky() {
+  return appsWidget?.classList.contains('is-fixed');
+}
 
 function updateWidgetPosition() {
   if (!heroSection || !appsWidget) return;
@@ -152,6 +157,9 @@ function updateWidgetPosition() {
     appsWidget.classList.add('is-fixed');
   } else {
     appsWidget.classList.remove('is-fixed');
+    // Force-close panel if user scrolls back into hero
+    appsPanel?.classList.remove('open');
+    appsWidgetBtn?.setAttribute('aria-expanded', 'false');
   }
 }
 
@@ -162,6 +170,14 @@ updateWidgetPosition();
 if (appsWidgetBtn && appsPanel) {
   appsWidgetBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+
+    // In hero mode: scroll to About instead of opening panel (keeps portrait unblocked)
+    if (!isWidgetSticky()) {
+      aboutSection?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // Sticky mode: normal toggle
     const isOpen = appsPanel.classList.toggle('open');
     appsWidgetBtn.setAttribute('aria-expanded', String(isOpen));
   });
