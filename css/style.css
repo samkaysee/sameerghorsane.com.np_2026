@@ -183,7 +183,7 @@ em { font-style: italic; color: var(--gold-dark); }
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--gold-dark);
-  margin-bottom: 12px;
+  margin-bottom: 2px;
 }
 .section__eyebrow--gold { color: var(--gold); }
 
@@ -191,14 +191,14 @@ em { font-style: italic; color: var(--gold-dark); }
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 600;
   color: var(--heading);
-  margin-bottom: 20px;
+  margin-bottom: 2px;
 }
 .section__title--white { color: var(--white); }
 .section__title--white em { color: var(--gold); }
 
 .section__rule {
   width: 48px;
-  height: 2px;
+  height: 1px;
   background: var(--gold);
   margin: 0 auto;
 }
