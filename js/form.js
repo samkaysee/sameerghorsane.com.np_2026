@@ -102,7 +102,7 @@ contactForm?.addEventListener('submit', async (e) => {
     showNotice(
       'success',
       '<i class="fa-solid fa-circle-check"></i> Thank you, ' + name.split(' ')[0] +
-      '! Your message has been received. I will be in touch within one business day.'
+      '! Your message has been received and I will revert at the earliest.'
     );
 
   } catch (err) {
