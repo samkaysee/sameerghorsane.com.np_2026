@@ -1873,40 +1873,45 @@ em { font-style: italic; color: var(--gold-dark); }
   .achievements__grid { grid-template-columns: repeat(2, 1fr); }
   .achievements__highlights { grid-template-columns: 1fr; }
 
-  /* Widget on mobile: static flow, centred pill below photo */
+  /* Widget on mobile hero: pinned to top-right (visible above photo) */
   .hero__photo-wrap {
     position: relative;
   }
   .apps-widget {
-    position: static;
+    position: absolute;
+    top: calc(var(--nav-h) + 8px);
+    right: 16px;
+    left: auto;
+    margin-top: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-top: 16px;
+    align-items: flex-end;
+    z-index: 50;
   }
   .apps-widget__btn {
     border-radius: 20px;
-    padding: 7px 16px;
-    font-size: 0.78rem;
-    background: rgba(234,189,35,0.13);
-    border: 1.5px solid rgba(234,189,35,0.38);
+    padding: 6px 12px;
+    font-size: 0.72rem;
+    background: rgba(234,189,35,0.18);
+    border: 1.5px solid rgba(234,189,35,0.45);
   }
-  /* Label always visible on mobile hero */
+  /* Label always visible on mobile */
   .apps-widget__btn-label { display: inline !important; }
 
-  /* Panel opens downward centred */
+  /* Panel opens downward, anchored to the button's right edge */
   .apps-widget__panel {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%) translateY(6px) scale(0.97);
-    right: auto;
-    width: 260px;
-    margin-top: 0;
+    top: 100%;
+    right: 0;
+    left: auto;
+    transform: translateY(6px) scale(0.97);
+    width: 240px;
+    margin-top: 8px;
     border-radius: 12px;
     border: 1px solid var(--border);
   }
   .apps-widget__panel.open {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 
   /* Once fixed (scrolled past hero) — same gold pill, top-right with gap */
@@ -1958,4 +1963,24 @@ em { font-style: italic; color: var(--gold-dark); }
 @keyframes cursor-blink {
   from, to { border-color: transparent; }
   50% { border-color: var(--gold); }
+}
+
+/* Mobile: shrink typewriter text + center the absolutely-positioned title item
+   so the full string fits without clipping on narrow screens */
+@media (max-width: 600px) {
+  .hero__titles {
+    overflow: visible;
+    height: auto;
+    min-height: 32px;
+  }
+  .hero__title-item {
+    position: static;
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+    white-space: normal;
+  }
+  #typewriterText { white-space: normal; }
+}
+@media (max-width: 360px) {
+  .hero__title-item { font-size: 0.75rem; }
 }
